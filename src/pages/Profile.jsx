@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Tickets = () => {
+function Profile() {
   return (
     <div>
-      Tickets
+      Profile
     </div>
   )
 }
 
-export default Tickets
+export default Profile

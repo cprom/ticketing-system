@@ -14,5 +14,11 @@ export const navItems = [
     label: 'Tickets',
     path: '/tickets',
   },
+  {
+    key: '3',
+    icon: <UserOutlined />,
+    label: 'Profile',
+    path: '/profile',
+  },
   // Add more items as needed
 ];
