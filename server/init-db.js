@@ -118,6 +118,7 @@ async function init() {
 
     // Seed data (idempotent)
     await pool.request().query(`
+        
       IF NOT EXISTS (SELECT 1 FROM Roles)
         INSERT INTO Roles (RoleName) VALUES ('Admin'), ('Agent'), ('User');
 
@@ -139,6 +140,12 @@ async function init() {
         ('System Admin', 'admin@tickets.local', 'hashed_password', 1),
         ('Support Agent', 'agent@tickets.local', 'hashed_password', 2),
         ('End User', 'user@tickets.local', 'hashed_password', 3);
+
+    IF NOT EXISTS (SELECT 1 FROM Tickets)
+        INSERT INTO Tickets (Title, Description, CreatedBy, StatusID, PriorityID, CategoryID)
+        VALUES 
+        ('Seeded Ticket 1', 'Ticket seeded by script for testing', '2', '2', '4', '1'),
+        ('Seeded Ticket 2', 'Ticket seeded by script for testing', '1', '1', '3', '2');
     `);
 
     console.log('Schema created and data seeded.');
