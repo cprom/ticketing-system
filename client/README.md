@@ -1,4 +1,4 @@
-# React + Vite
+# ticketing-system
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -14,4 +14,28 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# ticketing-system
+
+
+
+# How to Run App
+App is seperated into Server and Client folder each has its own package.json
+Make sure to run npm i in both folders.
+
+## Dotenv
+- run: npm i dotenv in server folder
+    - add a .env in the root and create:
+
+        - DB_PASSWORD="Database Password" 
+        - PORT="Database Port"
+
+## Client
+- run: npm run dev
+
+## Server 
+- install nodemon
+- run: nodemon server.js
+
+### Create DB 
+Run Docker Command:
+docker run -d --name SQL_Server_Ticketing_System -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Your Strong Password' -p 1402:1433 mcr.microsoft.com/mssql/server:2022-latest
+
