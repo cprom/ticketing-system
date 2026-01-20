@@ -139,13 +139,15 @@ async function init() {
         VALUES
         ('System Admin', 'admin@tickets.local', 'hashed_password', 1),
         ('Support Agent', 'agent@tickets.local', 'hashed_password', 2),
-        ('End User', 'user@tickets.local', 'hashed_password', 3);
+        ('End User', 'user@tickets.local', 'hashed_password', 3),
+        ('Kaylie Prom', 'kprom@tickets.local', 'hashed_password', 3),
+        ('Bella Prom', 'bprom@tickets.local', 'hashed_password', 2);
 
-    IF NOT EXISTS (SELECT 1 FROM Tickets)
-        INSERT INTO Tickets (Title, Description, CreatedBy, StatusID, PriorityID, CategoryID)
-        VALUES 
-        ('Seeded Ticket 1', 'Ticket seeded by script for testing', '2', '2', '4', '1'),
-        ('Seeded Ticket 2', 'Ticket seeded by script for testing', '1', '1', '3', '2');
+      IF NOT EXISTS (SELECT 1 FROM Tickets)
+          INSERT INTO Tickets (Title, Description, CreatedBy, StatusID, PriorityID, CategoryID)
+          VALUES 
+          ('Seeded Ticket 1', 'Ticket seeded by script for testing', 4, 2, 4, 1),
+          ('Seeded Ticket 2', 'Ticket seeded by script for testing 2', 5, 1, 3, 2);
     `);
 
     console.log('Schema created and data seeded.');
