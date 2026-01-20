@@ -23,10 +23,13 @@ Make sure to run npm i in both folders.
 
 ## Dotenv
 - run: npm i dotenv in server folder
-    - add a .env in the root and create:
+    - add a .env in the root and add:
 
         - DB_PASSWORD="Database Password" 
         - PORT="Database Port"
+        - DB_USER="sa"
+        - DB_HOST="localhost"
+        - DB_NAME="Master"
 
 ## Client
 - run: npm run dev
@@ -35,7 +38,10 @@ Make sure to run npm i in both folders.
 - install nodemon
 - run: nodemon server.js
 
-### Create DB 
+### Create DB and run Script to Create DB and Seed Data
 Run Docker Command:
-docker run -d --name SQL_Server_Ticketing_System -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Your Strong Password' -p 1402:1433 mcr.microsoft.com/mssql/server:2022-latest
+- docker run -d --name SQL_Server_Ticketing_System -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Your Strong Password' -p 1402:1433 mcr.microsoft.com/mssql/server:2022-latest
+
+- run db script to create and seed database
+    - run: node init-db.js
 
