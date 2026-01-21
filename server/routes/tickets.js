@@ -20,6 +20,43 @@ router.get('/', async (_, res) => {
   }
 });
 
+// Get Ticket by TicketID
+router.get('/:id', async (req, res) => {
+  try {
+    await poolConnect;
+    const result = await pool.request()
+      .input('TicketID', sql.Int, req.params.id)
+      .query(`
+        SELECT 
+          t.TicketID,
+          t.Title,
+          t.Description,
+          t.CreatedAt,
+          t.UpdatedAt,
+          creator.FullName AS CreatedByName,
+          assignee.FullName AS AssignedToName,
+          s.StatusName,
+          p.PriorityName,
+          c.CategoryName
+        FROM dbo.Tickets t
+        JOIN dbo.Users creator ON t.CreatedBy = creator.UserID
+        LEFT JOIN dbo.Users assignee ON t.AssignedTo = assignee.UserID
+        JOIN dbo.TicketStatus s ON t.StatusID = s.StatusID
+        JOIN dbo.TicketPriority p ON t.PriorityID = p.PriorityID
+        JOIN dbo.Categories c ON t.CategoryID = c.CategoryID
+        WHERE t.TicketID = @TicketID;
+      `);
+
+    if (!result.recordset.length) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Create ticket
 router.post('/', async (req, res) => {
   const { title, description, createdBy, priorityId, categoryId } = req.body;
@@ -66,6 +103,40 @@ router.put('/:id', async (req, res) => {
       `);
 
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete ticket by id
+router.delete('/:id', async (req, res) => {
+  const ticketId = parseInt(req.params.id, 10);
+
+  if (isNaN(ticketId)) {
+    return res.status(400).json({ message: 'Invalid ticket id' });
+  }
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('TicketID', sql.Int, ticketId)
+      .query(`
+        -- Remove dependent records first
+        DELETE FROM dbo.TicketAttachments WHERE TicketID = @TicketID;
+        DELETE FROM dbo.TicketComments   WHERE TicketID = @TicketID;
+
+        -- Delete the ticket
+        DELETE FROM dbo.Tickets WHERE TicketID = @TicketID;
+
+        SELECT @@ROWCOUNT AS AffectedRows;
+      `);
+
+    if (result.recordset[0].AffectedRows === 0) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    res.json({ success: true, ticketId });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
