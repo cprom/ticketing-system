@@ -6,7 +6,7 @@ const masterConfig = {
   password: process.env.DB_PASSWORD,
   server: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT),
-  database: 'master',
+  database: 'TicketingSystem',
   options: {
     encrypt: true,
     trustServerCertificate: true
