@@ -108,4 +108,38 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// Delete ticket by id
+router.delete('/:id', async (req, res) => {
+  const ticketId = parseInt(req.params.id, 10);
+
+  if (isNaN(ticketId)) {
+    return res.status(400).json({ message: 'Invalid ticket id' });
+  }
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('TicketID', sql.Int, ticketId)
+      .query(`
+        -- Remove dependent records first
+        DELETE FROM dbo.TicketAttachments WHERE TicketID = @TicketID;
+        DELETE FROM dbo.TicketComments   WHERE TicketID = @TicketID;
+
+        -- Delete the ticket
+        DELETE FROM dbo.Tickets WHERE TicketID = @TicketID;
+
+        SELECT @@ROWCOUNT AS AffectedRows;
+      `);
+
+    if (result.recordset[0].AffectedRows === 0) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    res.json({ success: true, ticketId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;
