@@ -20,6 +20,43 @@ router.get('/', async (_, res) => {
   }
 });
 
+// Get Ticket by TicketID
+router.get('/:id', async (req, res) => {
+  try {
+    await poolConnect;
+    const result = await pool.request()
+      .input('TicketID', sql.Int, req.params.id)
+      .query(`
+        SELECT 
+          t.TicketID,
+          t.Title,
+          t.Description,
+          t.CreatedAt,
+          t.UpdatedAt,
+          creator.FullName AS CreatedByName,
+          assignee.FullName AS AssignedToName,
+          s.StatusName,
+          p.PriorityName,
+          c.CategoryName
+        FROM dbo.Tickets t
+        JOIN dbo.Users creator ON t.CreatedBy = creator.UserID
+        LEFT JOIN dbo.Users assignee ON t.AssignedTo = assignee.UserID
+        JOIN dbo.TicketStatus s ON t.StatusID = s.StatusID
+        JOIN dbo.TicketPriority p ON t.PriorityID = p.PriorityID
+        JOIN dbo.Categories c ON t.CategoryID = c.CategoryID
+        WHERE t.TicketID = @TicketID;
+      `);
+
+    if (!result.recordset.length) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    res.json(result.recordset[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Create ticket
 router.post('/', async (req, res) => {
   const { title, description, createdBy, priorityId, categoryId } = req.body;

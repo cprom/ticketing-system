@@ -16,4 +16,28 @@ router.get('/', async (_, res) => {
   }
 });
 
+// Get user by UserID
+router.get('/:id', async (req, res) => {
+    try {
+        await poolConnect;
+        const result = await pool.request()
+        .input('UserID', sql.Int, req.params.id)
+        .query(`
+            SELECT
+                t.UserID,
+                t.FullName,
+                t.Email,
+                t.RoleID
+            FROM dbo.Users t
+            WHERE t.UserID = @UserID;
+                `);
+    if (!result.recordset.length) {
+        return res.status(404).json({message: 'User not found'});
+    }
+    res.json(result.recordset[0]);
+    }catch (err) {
+        res.status(500).json({error: err.message});
+    }
+});
+
 export default router;
