@@ -10,6 +10,7 @@ router.get('/', async (_, res) => {
       'SELECT UserID, FullName, Email, RoleID FROM Users'
     );
     res.json(result.recordset);
+    console.log(result)
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
