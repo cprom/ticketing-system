@@ -1,37 +1,39 @@
 import { useEffect, useState } from 'react';
 
-import { Table } from 'antd';
+import { Table, Badge, Space, Switch } from 'antd';
+import Column from 'antd/es/table/Column';
 
 const TicketsList = () => {
 
-    const [fetchedTickeData, setFetchedTicketData] = useState();
+    const [fetchedTicketData, setFetchedTicketData] = useState();
+    const [show, setShow] = useState(true);
 
-    const ticketsArray = [
-        {
-  "TicketID": 8,
-  "Title": "Seeded Ticket 2",
-  "Description": "Ticket seeded by script for testing 2",
-  "CreatedAt": "2026-01-20T20:43:59.003Z",
-  "UpdatedAt": null,
-  "CreatedByName": "Support Agent",
-  "AssignedToName": null,
-  "StatusName": "Open",
-  "PriorityName": "High",
-  "CategoryName": "Software"
-},
-{
-  "TicketID": 9,
-  "Title": "Seeded Ticket 3",
-  "Description": "Ticket seeded by script for testing 3",
-  "CreatedAt": "2026-01-20T20:43:59.003Z",
-  "UpdatedAt": null,
-  "CreatedByName": "Support Agent",
-  "AssignedToName": null,
-  "StatusName": "Open",
-  "PriorityName": "High",
-  "CategoryName": "Software"
-}
-    ]
+//     const ticketsArray = [
+//         {
+//   "TicketID": 8,
+//   "Title": "Seeded Ticket 2",
+//   "Description": "Ticket seeded by script for testing 2",
+//   "CreatedAt": "2026-01-20T20:43:59.003Z",
+//   "UpdatedAt": null,
+//   "CreatedByName": "Support Agent",
+//   "AssignedToName": null,
+//   "StatusName": "Open",
+//   "PriorityName": "High",
+//   "CategoryName": "Software"
+// },
+// {
+//   "TicketID": 9,
+//   "Title": "Seeded Ticket 3",
+//   "Description": "Ticket seeded by script for testing 3",
+//   "CreatedAt": "2026-01-20T20:43:59.003Z",
+//   "UpdatedAt": null,
+//   "CreatedByName": "Support Agent",
+//   "AssignedToName": null,
+//   "StatusName": "Open",
+//   "PriorityName": "High",
+//   "CategoryName": "Software"
+// }
+//     ]
 
     const fetchTicketData = async() => {
         const url = "http://localhost:3000/api/tickets/"
@@ -52,34 +54,41 @@ const TicketsList = () => {
         fetchTicketData();
     }, [])
 
-    console.log(fetchedTickeData)
+    console.log(fetchedTicketData)
 
     const columns = [
         {
             title: 'Ticket ID',
             dataIndex: 'TicketID',
             defaultSortOrder: 'descend',
+            key: 'TicketID',
             sorter: (a,b) => a.TicketID - b.TicketID,
+            render: text => <a>{text}</a>
         },
         {
             title: 'Title',
             dataIndex: 'Title',
+            key: 'Title'
         },
         {
             title: 'Description',
-            dataIndex: 'Description'
+            dataIndex: 'Description',
+            key: 'Description'
         },
         {
             title: 'Created By',
-            dataIndex: 'CreatedBy'
+            dataIndex: 'CreatedBy',
+            key: 'CreatedBy'
         },
         {
             title: 'Assigned To',
-            dataIndex: 'AssignedTo'
+            dataIndex: 'AssignedTo',
+            key: 'AssignedTo'
         },
         {
             title: 'Status',
             dataIndex: 'StatusName',
+            key: 'StatusName',
             filters: [
                 {
                     text: 'Open',
@@ -103,6 +112,14 @@ const TicketsList = () => {
         {
             title: 'Priority',
             dataIndex: 'PriorityName',
+            key: 'PriorityName',
+            render: text => 
+                text === 'Low' ? <Badge count={show ? 'Low' : 0} showZero color="#ffffffff" style={{color: 'black'}}/> 
+                : text === 'Medium' ? <Badge count={show ? 'Medium' : 0} showZero color="#fbf837ff" style={{color: 'black'}}/> 
+                : text === 'High' ? <Badge count={show ? 'High' : 0} showZero color="#ff8800ff" /> 
+                : text === 'Critical' ? <Badge count={show ? 'Critical' : 0} showZero color="#ff0000ff" /> 
+                : ""
+            ,
             filters: [
                 {
                     text: 'Low',
@@ -126,7 +143,8 @@ const TicketsList = () => {
         {
             title: 'Category',
             dataIndex: 'CategoryName',
-            filter: [
+            key: 'CategoryName',
+            filters: [
                 {
                     text: 'Hardware',
                     value: 'Hardware'
@@ -156,7 +174,15 @@ const TicketsList = () => {
         {
              title: 'Created On',
              dataIndex: 'CreatedAt',
+             key: 'CreatedAt',
              sorter: (a, b) => a.CreatedAt - b.CreatedAt,   
+        },
+        {
+            title: 'Action',
+            key: 'operation',
+            fixed: 'end',
+            width: 100,
+            render: () => <><a>View</a></>
         }
     ]
 
@@ -168,10 +194,13 @@ const TicketsList = () => {
     <div>
     <Table
         columns={columns}
-        dataSource={fetchedTickeData}
+        dataSource={fetchedTicketData}
         onChange={onChange}
         showSorterTooltip={{target: 'sorter-icon'}}
+        rowKey={record => record.TicketID}
         />
+           
+      
     </div>
   )
 }
