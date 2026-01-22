@@ -2,6 +2,10 @@ import { sql, pool, poolConnect } from '../db.js';
 import express from 'express'
 const router =  express.Router();
 
+
+// ---------------------------------------
+// Tickets
+// -------------------------------------
 // Get all tickets
 router.get('/', async (_, res) => {
   try {
@@ -87,6 +91,88 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Update ticket
+router.put('/:id', async (req, res) => {
+  const ticketId = parseInt(req.params.id, 10);
+  const {
+    title,
+    description,
+    statusId,
+    priorityId,
+    categoryId,
+    assignedTo
+  } = req.body;
+
+  if (isNaN(ticketId)) {
+    return res.status(400).json({ message: 'Invalid ticket id' });
+  }
+
+  // Nothing to update
+  if (
+    title === undefined &&
+    description === undefined &&
+    statusId === undefined &&
+    priorityId === undefined &&
+    categoryId === undefined &&
+    assignedTo === undefined
+  ) {
+    return res.status(400).json({ message: 'No fields to update' });
+  }
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('TicketID', sql.Int, ticketId)
+      .input('Title', sql.VarChar, title ?? null)
+      .input('Description', sql.Text, description ?? null)
+      .input('StatusID', sql.Int, statusId ?? null)
+      .input('PriorityID', sql.Int, priorityId ?? null)
+      .input('CategoryID', sql.Int, categoryId ?? null)
+      .input('AssignedTo', sql.Int, assignedTo ?? null)
+      .query(`
+        IF NOT EXISTS (SELECT 1 FROM dbo.Tickets WHERE TicketID = @TicketID)
+        BEGIN
+          THROW 50001, 'Ticket not found', 1;
+        END
+
+        UPDATE dbo.Tickets
+        SET
+          Title = COALESCE(@Title, Title),
+          Description = COALESCE(@Description, Description),
+          StatusID = COALESCE(@StatusID, StatusID),
+          PriorityID = COALESCE(@PriorityID, PriorityID),
+          CategoryID = COALESCE(@CategoryID, CategoryID),
+          AssignedTo = @AssignedTo,
+          UpdatedAt = GETDATE()
+        WHERE TicketID = @TicketID;
+
+        SELECT
+          TicketID,
+          Title,
+          Description,
+          StatusID,
+          PriorityID,
+          CategoryID,
+          AssignedTo,
+          UpdatedAt
+        FROM dbo.Tickets
+        WHERE TicketID = @TicketID;
+      `);
+
+    res.json(result.recordset[0]);
+  } catch (err) {
+    if (err.message.includes('Ticket not found')) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------
+// tickets End
+// -------------------------------------
 
 // Update status / assignment
 router.put('/:id', async (req, res) => {
