@@ -45,3 +45,68 @@ Run Docker Command:
 - run db script to create and seed database
     - run: node init-db.js
 
+## 📡 Ticketing System API Routes
+
+**Base URL**
+http://localhost:3000/api
+---
+## 👤 Users
+
+### Get all users
+GET /users
+
+---
+
+## 🎫 Tickets
+
+### Get all tickets
+GET /tickets
+
+### Get ticket by ID
+GET /tickets/:id
+
+### Create a new ticket
+POST /tickets
+
+**Request Body**
+```json
+{
+  "title": "Printer not working",
+  "description": "Printer shows paper jam error",
+  "createdBy": 1,
+  "priorityId": 2,
+  "categoryId": 1
+}
+```
+### Update ticket
+
+```json
+{
+  "statusId": 2,
+  "assignedTo": 3,
+  "priorityId": 4
+}
+```
+
+### Delete Ticket
+DELETE /tickets/:id
+
+## Ticket Comments
+
+### Get comments for a ticket
+GET /tickets/:id/comments
+
+### Create comment for a ticket
+POST /tickets/:id/comments
+```json
+{
+  "userId": 2,
+  "comment": "Looking into this now."
+}
+```
+
+### Update comment
+PUT /tickets/comments/:commentId
+
+### Delete comment
+DELETE /tickets/comments/:commentId
