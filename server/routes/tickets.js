@@ -7,8 +7,10 @@ router.get('/', async (_, res) => {
   try {
     await poolConnect;
     const result = await pool.request().query(`
-      SELECT t.*, s.StatusName, p.PriorityName, c.CategoryName
+      SELECT t.*, creator.FullName AS CreatedByName, assignee.FullName AS AssignedToName, s.StatusName, p.PriorityName, c.CategoryName
       FROM Tickets t
+      JOIN dbo.Users creator ON t.CreatedBy = creator.UserID
+      LEFT JOIN dbo.Users assignee ON t.AssignedTo = assignee.UserID
       JOIN TicketStatus s ON t.StatusID = s.StatusID
       JOIN TicketPriority p ON t.PriorityID = p.PriorityID
       JOIN Categories c ON t.CategoryID = c.CategoryID
@@ -59,7 +61,7 @@ router.get('/:id', async (req, res) => {
 
 // Create ticket
 router.post('/', async (req, res) => {
-  const { title, description, createdBy, statusId, priorityId, categoryId } = req.body;
+  const { title, description, createdBy, assignedTo, statusId, priorityId, categoryId } = req.body;
 
   try {
     await poolConnect;
@@ -67,14 +69,15 @@ router.post('/', async (req, res) => {
       .input('Title', sql.VarChar, title)
       .input('Description', sql.Text, description)
       .input('CreatedBy', sql.Int, createdBy)
+      .input('AssignedTo', sql.Int, assignedTo)
       .input('StatusID', sql.Int, statusId)
       .input('PriorityID', sql.Int, priorityId)
       .input('CategoryID', sql.Int, categoryId)
       .query(`
         INSERT INTO Tickets
-          (Title, Description, CreatedBy, StatusID, PriorityID, CategoryID)
+          (Title, Description, CreatedBy, AssignedTo, StatusID, PriorityID, CategoryID)
         VALUES
-          (@Title, @Description, @CreatedBy, @StatusID, @PriorityID, @CategoryID);
+          (@Title, @Description, @CreatedBy, @AssignedTo, @StatusID, @PriorityID, @CategoryID);
 
         SELECT SCOPE_IDENTITY() AS TicketID;
       `);

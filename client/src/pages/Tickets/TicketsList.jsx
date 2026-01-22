@@ -77,13 +77,13 @@ const TicketsList = () => {
         },
         {
             title: 'Created By',
-            dataIndex: 'CreatedBy',
-            key: 'CreatedBy'
+            dataIndex: 'CreatedByName',
+            key: 'CreatedByName'
         },
         {
             title: 'Assigned To',
-            dataIndex: 'AssignedTo',
-            key: 'AssignedTo'
+            dataIndex: 'AssignedToName',
+            key: 'AssignedToName'
         },
         {
             title: 'Status',
