@@ -207,6 +207,12 @@ router.post('/:id/comments', async (req, res) => {
 });
 
 // Get comments for a ticket
+// GET /api/tickets/:id/comments
+// Body (Json)
+// {
+//   "userId": 2,
+//   "comment": "I am looking into this issue now."
+// }
 router.get('/:id/comments', async (req, res) => {
   const ticketId = parseInt(req.params.id, 10);
 
@@ -239,6 +245,7 @@ router.get('/:id/comments', async (req, res) => {
 });
 
 // Update comment
+// PUT /api/tickets/comments/:commentId
 router.put('/comments/:commentId', async (req, res) => {
   const commentId = parseInt(req.params.commentId, 10);
   const { comment } = req.body;
@@ -272,6 +279,7 @@ router.put('/comments/:commentId', async (req, res) => {
 });
 
 // Delete comment
+// DELETE /api/tickets/comments/:commentId
 router.delete('/comments/:commentId', async (req, res) => {
   const commentId = parseInt(req.params.commentId, 10);
 
