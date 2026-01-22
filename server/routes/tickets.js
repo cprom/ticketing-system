@@ -7,7 +7,7 @@ router.get('/', async (_, res) => {
   try {
     await poolConnect;
     const result = await pool.request().query(`
-      SELECT t.*, creator.FullName AS CreatedByName, assignee.FullName AS AssignedToName, s.StatusName, p.PriorityName, c.CategoryName
+      SELECT t.*, creator.FullName AS CreatedByName, assignee.FullName AS AssignedToName, s.StatusName, p.PriorityName, c.CategoryName 
       FROM Tickets t
       JOIN dbo.Users creator ON t.CreatedBy = creator.UserID
       LEFT JOIN dbo.Users assignee ON t.AssignedTo = assignee.UserID
@@ -145,5 +145,166 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// ---------------------------------------
+// Comments
+// ---------------------------------------
+
+// Create a comment for a ticket
+router.post('/:id/comments', async (req, res) => {
+  const ticketId = parseInt(req.params.id, 10);
+  const { userId, comment } = req.body;
+
+  if (isNaN(ticketId)) {
+    return res.status(400).json({ message: 'Invalid ticket id' });
+  }
+
+  if (!userId || !comment?.trim()) {
+    return res.status(400).json({ message: 'userId and comment are required' });
+  }
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('TicketID', sql.Int, ticketId)
+      .input('UserID', sql.Int, userId)
+      .input('Comment', sql.Text, comment)
+      .query(`
+        -- Ensure ticket exists
+        IF NOT EXISTS (SELECT 1 FROM dbo.Tickets WHERE TicketID = @TicketID)
+        BEGIN
+          THROW 50001, 'Ticket not found', 1;
+        END
+
+        -- Ensure user exists
+        IF NOT EXISTS (SELECT 1 FROM dbo.Users WHERE UserID = @UserID)
+        BEGIN
+          THROW 50002, 'User not found', 1;
+        END
+
+        INSERT INTO dbo.TicketComments (TicketID, UserID, Comment)
+        VALUES (@TicketID, @UserID, @Comment);
+
+        SELECT
+          SCOPE_IDENTITY() AS CommentID,
+          @TicketID       AS TicketID,
+          @UserID         AS UserID,
+          @Comment        AS Comment,
+          GETDATE()       AS CreatedAt;
+      `);
+
+    res.status(201).json(result.recordset[0]);
+  } catch (err) {
+    if (err.message.includes('Ticket not found')) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+    if (err.message.includes('User not found')) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get comments for a ticket
+router.get('/:id/comments', async (req, res) => {
+  const ticketId = parseInt(req.params.id, 10);
+
+  if (isNaN(ticketId)) {
+    return res.status(400).json({ message: 'Invalid ticket id' });
+  }
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('TicketID', sql.Int, ticketId)
+      .query(`
+        SELECT
+          c.CommentID,
+          c.Comment,
+          c.CreatedAt,
+          u.UserID,
+          u.FullName
+        FROM dbo.TicketComments c
+        JOIN dbo.Users u ON c.UserID = u.UserID
+        WHERE c.TicketID = @TicketID
+        ORDER BY c.CreatedAt ASC;
+      `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update comment
+router.put('/comments/:commentId', async (req, res) => {
+  const commentId = parseInt(req.params.commentId, 10);
+  const { comment } = req.body;
+
+  if (isNaN(commentId) || !comment?.trim()) {
+    return res.status(400).json({ message: 'Invalid input' });
+  }
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('CommentID', sql.Int, commentId)
+      .input('Comment', sql.Text, comment)
+      .query(`
+        UPDATE dbo.TicketComments
+        SET Comment = @Comment
+        WHERE CommentID = @CommentID;
+
+        SELECT @@ROWCOUNT AS AffectedRows;
+      `);
+
+    if (result.recordset[0].AffectedRows === 0) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    res.json({ success: true, commentId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete comment
+router.delete('/comments/:commentId', async (req, res) => {
+  const commentId = parseInt(req.params.commentId, 10);
+
+  if (isNaN(commentId)) {
+    return res.status(400).json({ message: 'Invalid comment id' });
+  }
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('CommentID', sql.Int, commentId)
+      .query(`
+        DELETE FROM dbo.TicketComments
+        WHERE CommentID = @CommentID;
+
+        SELECT @@ROWCOUNT AS AffectedRows;
+      `);
+
+    if (result.recordset[0].AffectedRows === 0) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    res.json({ success: true, commentId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------
+// Comments End
+// ---------------------------------------
+
+
 
 export default router;

@@ -45,3 +45,11 @@ Run Docker Command:
 - run db script to create and seed database
     - run: node init-db.js
 
+# API
+
+POST   /tickets
+DELETE /api/tickets/:id
+POST   /tickets/:id/comments        → create comment
+GET    /tickets/:id/comments        → list comments
+PUT    /tickets/comments/:commentId → update comment
+DELETE /tickets/comments/:commentId → delete comment
