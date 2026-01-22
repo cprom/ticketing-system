@@ -22,7 +22,7 @@ App is seperated into Server and Client folder each has its own package.json
 Make sure to run npm i in both folders.
 
 ## Dotenv
-- run: npm i dotenv in server folder
+- run: <code>npm i dotenv in server folder</code>
     - add a .env in the root and add:
 
         - DB_PASSWORD="Database Password" 
@@ -32,18 +32,18 @@ Make sure to run npm i in both folders.
         - DB_NAME="Master"
 
 ## Client
-- run: npm run dev
+- run: <code>npm run dev </code>
 
 ## Server 
 - install nodemon
-- run: nodemon server.js
+- run: <code>nodemon server.js</code>
 
 ### Create DB and run Script to Create DB and Seed Data
 Run Docker Command:
-- docker run -d --name SQL_Server_Ticketing_System -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Your Strong Password' -p 1402:1433 mcr.microsoft.com/mssql/server:2022-latest
+- <code>docker run -d --name SQL_Server_Ticketing_System -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Your Strong Password' -p 1402:1433 mcr.microsoft.com/mssql/server:2022-latest</code>
 
 - run db script to create and seed database
-    - run: node init-db.js
+    - run: <code>node init-db.js</code>
 
 ## 📡 Ticketing System API Routes
 
@@ -54,9 +54,7 @@ http://localhost:3000/api
 
 ### Get all users
 GET /users
-
 ---
-
 ## 🎫 Tickets
 
 ### Get all tickets
