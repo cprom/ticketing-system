@@ -59,7 +59,7 @@ router.get('/:id', async (req, res) => {
 
 // Create ticket
 router.post('/', async (req, res) => {
-  const { title, description, createdBy, priorityId, categoryId } = req.body;
+  const { title, description, createdBy, statusId, priorityId, categoryId } = req.body;
 
   try {
     await poolConnect;
@@ -67,13 +67,14 @@ router.post('/', async (req, res) => {
       .input('Title', sql.VarChar, title)
       .input('Description', sql.Text, description)
       .input('CreatedBy', sql.Int, createdBy)
+      .input('StatusID', sql.Int, statusId)
       .input('PriorityID', sql.Int, priorityId)
       .input('CategoryID', sql.Int, categoryId)
       .query(`
         INSERT INTO Tickets
           (Title, Description, CreatedBy, StatusID, PriorityID, CategoryID)
         VALUES
-          (@Title, @Description, @CreatedBy, 1, @PriorityID, @CategoryID);
+          (@Title, @Description, @CreatedBy, @StatusID, @PriorityID, @CategoryID);
 
         SELECT SCOPE_IDENTITY() AS TicketID;
       `);

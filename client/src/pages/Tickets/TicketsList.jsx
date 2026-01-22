@@ -114,7 +114,7 @@ const TicketsList = () => {
             dataIndex: 'PriorityName',
             key: 'PriorityName',
             render: text => 
-                text === 'Low' ? <Badge count={show ? 'Low' : 0} showZero color="#ffffffff" style={{color: 'black'}}/> 
+                text === 'Low' ? <Badge count={show ? 'Low' : 0} showZero color="#ebebebff" style={{color: 'black'}}/> 
                 : text === 'Medium' ? <Badge count={show ? 'Medium' : 0} showZero color="#fbf837ff" style={{color: 'black'}}/> 
                 : text === 'High' ? <Badge count={show ? 'High' : 0} showZero color="#ff8800ff" /> 
                 : text === 'Critical' ? <Badge count={show ? 'Critical' : 0} showZero color="#ff0000ff" /> 
