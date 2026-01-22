@@ -1,9 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router"
-import Home from "./pages/Tickets"
-import Dashboard from "./pages/Dashboard"
+import Dashboard from "./pages/Dashboard/Dashboard"
 import LayoutComponent from "./components/Navbar/LayoutComponent"
-import Tickets from "./pages/Tickets"
-import Profile from "./pages/Profile"
+import Tickets from "./pages/Tickets/Tickets"
+import Profile from "./pages/Profile/Profile"
 
 function App() {
 
