@@ -4,7 +4,6 @@ import TicketsList from './TicketsList'
 const Tickets = () => {
   return (
     <div>
-      Tickets
       <TicketsList/>
     </div>
   )

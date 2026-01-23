@@ -63,7 +63,7 @@ const TicketsList = () => {
             defaultSortOrder: 'descend',
             key: 'TicketID',
             sorter: (a,b) => a.TicketID - b.TicketID,
-            render: text => <a>{text}</a>
+            render: text => <a href={`/tickets/${text}`} >{text}</a>
         },
         {
             title: 'Title',
@@ -179,10 +179,11 @@ const TicketsList = () => {
         },
         {
             title: 'Action',
+            dataIndex: 'TicketID',
             key: 'operation',
             fixed: 'end',
             width: 100,
-            render: () => <><a>View</a></>
+            render: (text) =><a href={`/tickets/${text}`} >View</a>
         }
     ]
 
@@ -199,8 +200,6 @@ const TicketsList = () => {
         showSorterTooltip={{target: 'sorter-icon'}}
         rowKey={record => record.TicketID}
         />
-           
-      
     </div>
   )
 }
