@@ -1,60 +1,28 @@
-import { useEffect, useState } from 'react';
-
+import { useState } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import { Spin } from "antd";
 import { Table, Badge, Space, Switch } from 'antd';
 import Column from 'antd/es/table/Column';
 
 const TicketsList = () => {
 
-    const [fetchedTicketData, setFetchedTicketData] = useState();
     const [show, setShow] = useState(true);
 
-//     const ticketsArray = [
-//         {
-//   "TicketID": 8,
-//   "Title": "Seeded Ticket 2",
-//   "Description": "Ticket seeded by script for testing 2",
-//   "CreatedAt": "2026-01-20T20:43:59.003Z",
-//   "UpdatedAt": null,
-//   "CreatedByName": "Support Agent",
-//   "AssignedToName": null,
-//   "StatusName": "Open",
-//   "PriorityName": "High",
-//   "CategoryName": "Software"
-// },
-// {
-//   "TicketID": 9,
-//   "Title": "Seeded Ticket 3",
-//   "Description": "Ticket seeded by script for testing 3",
-//   "CreatedAt": "2026-01-20T20:43:59.003Z",
-//   "UpdatedAt": null,
-//   "CreatedByName": "Support Agent",
-//   "AssignedToName": null,
-//   "StatusName": "Open",
-//   "PriorityName": "High",
-//   "CategoryName": "Software"
-// }
-//     ]
-
-    const fetchTicketData = async() => {
-        const url = "http://localhost:3000/api/tickets/"
-        try{
-            const response = await fetch(url);
-            if(!response.ok){
-                throw new Error (`Error fetching data: ${Error}`)
-            }
-            const ticketData = await response.json();
-            setFetchedTicketData(ticketData)
-        }
-        catch(err) {
-            console.log(err)
-        }
+       const getTickets = async () => {
+        const response = await fetch(`http://localhost:3000/api/tickets/`);
+        return await response.json();
     }
 
-    useEffect(() => {
-        fetchTicketData();
-    }, [])
+    const { data, error, isPending } = useQuery({
+        queryKey: ['tickets'],
+        queryFn: getTickets
+    });
 
-    console.log(fetchedTicketData)
+    if(error){
+        console.log(`Fetching Error: ${error}`);
+    }
+
+
 
     const columns = [
         {
@@ -193,13 +161,17 @@ const TicketsList = () => {
 
   return (
     <div>
-    <Table
+        { isPending 
+        ? <div className='spinner-container'><Spin /></div> 
+        : <Table
         columns={columns}
-        dataSource={fetchedTicketData}
+        dataSource={data}
         onChange={onChange}
         showSorterTooltip={{target: 'sorter-icon'}}
         rowKey={record => record.TicketID}
         />
+        }
+    
     </div>
   )
 }
