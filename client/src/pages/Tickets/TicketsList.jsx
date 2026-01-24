@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { Spin } from "antd";
 import { Table, Badge, Space, Switch } from 'antd';
 import Column from 'antd/es/table/Column';
@@ -7,13 +7,16 @@ import Column from 'antd/es/table/Column';
 const TicketsList = () => {
 
     const [show, setShow] = useState(true);
-
+    const [fetchedData, setFetchData] = useState([]);
        const getTickets = async () => {
         const response = await fetch(`http://localhost:3000/api/tickets/`);
-        return await response.json();
+        const results = await response.json();
+        setFetchData(results)
+        return results
     }
 
-    const { data, error, isPending } = useQuery({
+
+    const { error, isPending } = useQuery({
         queryKey: ['tickets'],
         queryFn: getTickets
     });
@@ -57,6 +60,13 @@ const TicketsList = () => {
             title: 'Status',
             dataIndex: 'StatusName',
             key: 'StatusName',
+            render: text => 
+                 text === 'Open' ? <Badge count={show ? 'Open' : 0} showZero color="#00be43ff" /> 
+                : text === 'Closed' ? <Badge count={show ? 'Closed' : 0} showZero color="#fb3737ff" /> 
+                : text === 'Resolved' ? <Badge count={show ? 'Resolved' : 0} showZero color="#ff8800ff" /> 
+                : text === 'In Progress' ? <Badge count={show ? 'In Progress' : 0} showZero color="#ffe600ff" style={{color: 'black'}} /> 
+                : ""
+                ,
             filters: [
                 {
                     text: 'Open',
@@ -83,7 +93,7 @@ const TicketsList = () => {
             key: 'PriorityName',
             render: text => 
                 text === 'Low' ? <Badge count={show ? 'Low' : 0} showZero color="#ebebebff" style={{color: 'black'}}/> 
-                : text === 'Medium' ? <Badge count={show ? 'Medium' : 0} showZero color="#fbf837ff" style={{color: 'black'}}/> 
+                : text === 'Medium' ? <Badge count={show ? 'Medium' : 0} showZero color="#ffe600ff" style={{color: 'black'}}/> 
                 : text === 'High' ? <Badge count={show ? 'High' : 0} showZero color="#ff8800ff" /> 
                 : text === 'Critical' ? <Badge count={show ? 'Critical' : 0} showZero color="#ff0000ff" /> 
                 : ""
@@ -165,7 +175,7 @@ const TicketsList = () => {
         ? <div className='spinner-container'><Spin /></div> 
         : <Table
         columns={columns}
-        dataSource={data}
+        dataSource={fetchedData}
         onChange={onChange}
         showSorterTooltip={{target: 'sorter-icon'}}
         rowKey={record => record.TicketID}
