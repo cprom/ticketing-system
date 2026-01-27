@@ -11,6 +11,7 @@ import usersRoutes from'./routes/users.js';
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({extended: true}))
 
 app.use('/api/tickets', ticketsRoutes);
 app.use('/api/users', usersRoutes);

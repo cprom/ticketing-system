@@ -1,60 +1,31 @@
-import { useEffect, useState } from 'react';
-
+import { useState } from 'react';
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { Spin } from "antd";
 import { Table, Badge, Space, Switch } from 'antd';
 import Column from 'antd/es/table/Column';
 
 const TicketsList = () => {
 
-    const [fetchedTicketData, setFetchedTicketData] = useState();
     const [show, setShow] = useState(true);
-
-//     const ticketsArray = [
-//         {
-//   "TicketID": 8,
-//   "Title": "Seeded Ticket 2",
-//   "Description": "Ticket seeded by script for testing 2",
-//   "CreatedAt": "2026-01-20T20:43:59.003Z",
-//   "UpdatedAt": null,
-//   "CreatedByName": "Support Agent",
-//   "AssignedToName": null,
-//   "StatusName": "Open",
-//   "PriorityName": "High",
-//   "CategoryName": "Software"
-// },
-// {
-//   "TicketID": 9,
-//   "Title": "Seeded Ticket 3",
-//   "Description": "Ticket seeded by script for testing 3",
-//   "CreatedAt": "2026-01-20T20:43:59.003Z",
-//   "UpdatedAt": null,
-//   "CreatedByName": "Support Agent",
-//   "AssignedToName": null,
-//   "StatusName": "Open",
-//   "PriorityName": "High",
-//   "CategoryName": "Software"
-// }
-//     ]
-
-    const fetchTicketData = async() => {
-        const url = "http://localhost:3000/api/tickets/"
-        try{
-            const response = await fetch(url);
-            if(!response.ok){
-                throw new Error (`Error fetching data: ${Error}`)
-            }
-            const ticketData = await response.json();
-            setFetchedTicketData(ticketData)
-        }
-        catch(err) {
-            console.log(err)
-        }
+    const [fetchedData, setFetchData] = useState([]);
+       const getTickets = async () => {
+        const response = await fetch(`http://localhost:3000/api/tickets/`);
+        const results = await response.json();
+        setFetchData(results)
+        return results
     }
 
-    useEffect(() => {
-        fetchTicketData();
-    }, [])
 
-    console.log(fetchedTicketData)
+    const { error, isPending } = useQuery({
+        queryKey: ['tickets'],
+        queryFn: getTickets
+    });
+
+    if(error){
+        console.log(`Fetching Error: ${error}`);
+    }
+
+
 
     const columns = [
         {
@@ -63,7 +34,7 @@ const TicketsList = () => {
             defaultSortOrder: 'descend',
             key: 'TicketID',
             sorter: (a,b) => a.TicketID - b.TicketID,
-            render: text => <a>{text}</a>
+            render: text => <a href={`/tickets/${text}`} >{text}</a>
         },
         {
             title: 'Title',
@@ -89,6 +60,13 @@ const TicketsList = () => {
             title: 'Status',
             dataIndex: 'StatusName',
             key: 'StatusName',
+            render: text => 
+                 text === 'Open' ? <Badge count={show ? 'Open' : 0} showZero color="#00be43ff" /> 
+                : text === 'Closed' ? <Badge count={show ? 'Closed' : 0} showZero color="#fb3737ff" /> 
+                : text === 'Resolved' ? <Badge count={show ? 'Resolved' : 0} showZero color="#ff8800ff" /> 
+                : text === 'In Progress' ? <Badge count={show ? 'In Progress' : 0} showZero color="#ffe600ff" style={{color: 'black'}} /> 
+                : ""
+                ,
             filters: [
                 {
                     text: 'Open',
@@ -115,7 +93,7 @@ const TicketsList = () => {
             key: 'PriorityName',
             render: text => 
                 text === 'Low' ? <Badge count={show ? 'Low' : 0} showZero color="#ebebebff" style={{color: 'black'}}/> 
-                : text === 'Medium' ? <Badge count={show ? 'Medium' : 0} showZero color="#fbf837ff" style={{color: 'black'}}/> 
+                : text === 'Medium' ? <Badge count={show ? 'Medium' : 0} showZero color="#ffe600ff" style={{color: 'black'}}/> 
                 : text === 'High' ? <Badge count={show ? 'High' : 0} showZero color="#ff8800ff" /> 
                 : text === 'Critical' ? <Badge count={show ? 'Critical' : 0} showZero color="#ff0000ff" /> 
                 : ""
@@ -179,10 +157,11 @@ const TicketsList = () => {
         },
         {
             title: 'Action',
+            dataIndex: 'TicketID',
             key: 'operation',
             fixed: 'end',
             width: 100,
-            render: () => <><a>View</a></>
+            render: (text) =><a href={`/tickets/${text}`} >View</a>
         }
     ]
 
@@ -192,15 +171,17 @@ const TicketsList = () => {
 
   return (
     <div>
-    <Table
+        { isPending 
+        ? <div className='spinner-container'><Spin /></div> 
+        : <Table
         columns={columns}
-        dataSource={fetchedTicketData}
+        dataSource={fetchedData}
         onChange={onChange}
         showSorterTooltip={{target: 'sorter-icon'}}
         rowKey={record => record.TicketID}
         />
-           
-      
+        }
+    
     </div>
   )
 }

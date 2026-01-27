@@ -65,7 +65,7 @@ router.get('/:id', async (req, res) => {
 
 // Create ticket
 router.post('/', async (req, res) => {
-  const { title, description, createdBy, assignedTo, statusId, priorityId, categoryId } = req.body;
+  const { title, description, createdBy, assignedTo, statusId, priorityId, categoryId } = req.body || {};
 
   try {
     await poolConnect;
@@ -102,7 +102,7 @@ router.put('/:id', async (req, res) => {
     priorityId,
     categoryId,
     assignedTo
-  } = req.body;
+  } = req.body || {};
 
   if (isNaN(ticketId)) {
     return res.status(400).json({ message: 'Invalid ticket id' });
@@ -176,7 +176,7 @@ router.put('/:id', async (req, res) => {
 
 // Update status / assignment
 router.put('/:id', async (req, res) => {
-  const { statusId, assignedTo } = req.body;
+  const { statusId, assignedTo } = req.body || {};
 
   try {
     await poolConnect;
@@ -239,7 +239,7 @@ router.delete('/:id', async (req, res) => {
 // Create a comment for a ticket
 router.post('/:id/comments', async (req, res) => {
   const ticketId = parseInt(req.params.id, 10);
-  const { userId, comment } = req.body;
+  const { userId, comment } = req.body || {};
 
   if (isNaN(ticketId)) {
     return res.status(400).json({ message: 'Invalid ticket id' });
@@ -334,7 +334,7 @@ router.get('/:id/comments', async (req, res) => {
 // PUT /api/tickets/comments/:commentId
 router.put('/comments/:commentId', async (req, res) => {
   const commentId = parseInt(req.params.commentId, 10);
-  const { comment } = req.body;
+  const { comment } = req.body || {};
 
   if (isNaN(commentId) || !comment?.trim()) {
     return res.status(400).json({ message: 'Invalid input' });

@@ -3,7 +3,40 @@
     text-align: center;
 }
 
-.container {
-    margin-left: 100px;
+.spinner-container {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;     /* Centers vertically */
+    height: 100vh;          /* Ensures the container takes full viewport height */
+
 }
 
+.comments-container {
+    margin-top: 10px;
+}
+
+.comment-info {
+    display: flex;
+    gap: 10px;
+}
+
+.comment-card {
+    margin-top: 10px;
+}
+
+.ticket-edit-btn {
+    background-color: #001529;
+    color:white; 
+    margin-top: 8.715px;
+}
+
+.add-comment-btn {
+    margin-top: 10px;
+    float: right;
+}
+
+.comment-edit-btn {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-end;
+}
