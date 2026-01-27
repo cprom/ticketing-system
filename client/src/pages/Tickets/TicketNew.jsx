@@ -6,10 +6,12 @@ import {
     Select,
     Button
 } from 'antd';
+import { useNavigate } from 'react-router';
 const { TextArea } = Input;
 
 
 const TicketNew = () => {
+    const navigate = useNavigate();
     const currentUser = useContext(UserContext)
     const [componentSize, setComponentSize] = useState('default');
     const [title, setTitle] = useState();
@@ -46,6 +48,7 @@ const TicketNew = () => {
 
     const handleCreateBtnClick = () => {
         createNewTicket(title, description, currentUserId, assignToId, priorityId, categoryId, statusId );
+        navigate('/tickets');
     }
 
   return (
@@ -60,26 +63,26 @@ const TicketNew = () => {
             size={componentSize}
         
         >
-            <Form.Item onChange={handleTitleChange} label="Title">
-                <Input />
+            <Form.Item name={['Title']} label="Title" rules={[{required: true, message: 'Title is required'}]}>
+                <Input onChange={handleTitleChange}  />
             </Form.Item>
             <Form.Item label="Assign To">
                 <Select onChange={handleAssignToChange} options={[{ label: 'Sys Admin', value: 4 }]} style={{width: 250}}/>
             </Form.Item>
-            <Form.Item label="Priority">
+            <Form.Item name={['Priority']} label="Priority" rules={[{required: true}]}>
                 <Select onChange={handlePriorityChange} options={[{ label: 'Medium', value: 2 }]} style={{width: 250}}/>
             </Form.Item>
-            <Form.Item label="Category">
+            <Form.Item name={['Category']} label="Category" rules={[{required: true}]}>
                 <Select onChange={handleCategoryChange} options={[{ label: 'Hardware', value: 1 }]} style={{width: 250}}/>
             </Form.Item>
-            <Form.Item label="Status">
+            <Form.Item name={['Status']} label="Status" rules={[{required: true}]}>
                 <Select onChange={handleStatusChange} options={[{ label: 'Open', value: 1 }]} style={{width: 250}}/>
             </Form.Item>
-            <Form.Item name={['introduction']} label="Description">
+            <Form.Item name={['Description']} label="Description" rules={[{required: true}]}>
                 <TextArea onChange={handleDescriptionChange} style={{ height: 300 }} />
             </Form.Item>
             <Form.Item label={null}>
-                <Button color="default" variant="solid" onClick={handleCreateBtnClick}>
+                <Button color="default" variant="solid" onClick={handleCreateBtnClick} htmlType='submit'>
                     Create
                 </Button>
             </Form.Item>
