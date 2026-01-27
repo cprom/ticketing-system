@@ -15,15 +15,14 @@ const TicketDetails = () => {
 
         const { id } = useParams();
         const [show, setShow] = useState(true);
-    console.log(id)
 
-       const getTickets = async () => {
+        const getTickets = async () => {
         const response = await fetch(`http://localhost:3000/api/tickets/${id}`);
         return await response.json();
     }
 
     const { data, error, isPending } = useQuery({
-        queryKey: ['tickets'],
+        queryKey: ['tickets', id],
         queryFn: getTickets
     });
 
@@ -31,22 +30,18 @@ const TicketDetails = () => {
         console.log(`Ticket Fetching Error: ${error}`);
     }
 
-    console.log(data)
-
     const getComments = async () => {
         const response = await fetch(`http://localhost:3000/api/tickets/${id}/comments`);
         return await response.json();
     }
 
     const {data: commentData , error: commentError } = useQuery({
-        queryKey: ['comments'],
+        queryKey: ['comments', id],
         queryFn: getComments
     })
     if(commentError){
         console.log(`Comment Fetching Error: ${commentError}`);
     }
-
-    console.log(commentData)
 
   return (
     <div>
@@ -115,7 +110,7 @@ const TicketDetails = () => {
             <div className="comments-container">
                 {
                     commentData && commentData.map((comment) => (
-                        <Card key={comment.TicketID} className="comment-card">
+                        <Card key={comment.CommentID} className="comment-card">
                             <Flex vertical>
                             <div className="comment-info">
                                 <p>By: {comment.FullName}</p>

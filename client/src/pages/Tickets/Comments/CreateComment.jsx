@@ -13,7 +13,6 @@ const { TextArea } = Input;
 const CreateComment = ({ticketID}) => {
 
   const currentUser = useContext(UserContext)
-  console.log(currentUser)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [comment, setComment] = useState('');
 
@@ -21,8 +20,9 @@ const CreateComment = ({ticketID}) => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
+  const handleAdd = () => {
     addComment(ticketID, comment, currentUser)
+    window.location.reload(false);
     setIsModalOpen(false);
   };
   const handleCancel = () => {
@@ -30,7 +30,6 @@ const CreateComment = ({ticketID}) => {
   };
 
   const handleTextChange = (e) => {
-    console.log(e.target.value)
     setComment(e.target.value);
   }
   return (
@@ -41,7 +40,7 @@ const CreateComment = ({ticketID}) => {
         title={`Add Comment for ticket # ${ticketID}`}
         closable={{ 'aria-label': 'Custom Close Button' }}
         open={isModalOpen}
-        onOk={handleOk}
+        onOk={handleAdd}
         onCancel={handleCancel}
         okText="Add"
       >

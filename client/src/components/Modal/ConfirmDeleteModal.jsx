@@ -7,11 +7,12 @@ import {
 const ConfirmDeleteModal = ({commentID}) => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
+    const showModal = () => {
+      setIsModalOpen(true);
+    };
   const handleOk = () => {
     deleteComment(commentID)
+    window.location.reload(false);
     setIsModalOpen(false);
   };
   const handleCancel = () => {
@@ -35,12 +36,10 @@ const ConfirmDeleteModal = ({commentID}) => {
 }
 
 const deleteComment = async (id) => {
-  
  try {
    const response = await fetch(`http://localhost:3000/api/tickets/comments/${id}`, {
     method: "DELETE",
   })
-
   if(response.ok){
     console.log(`Comment with ID ${id} deleted successfully`)
     return response.status;
