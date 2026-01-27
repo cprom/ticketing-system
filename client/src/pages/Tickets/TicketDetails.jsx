@@ -1,8 +1,15 @@
 import { useState } from "react";
 import { useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Card, Spin } from "antd";
+import { Button, Card, Spin, Flex, Tooltip, Modal } from "antd";
+import {
+    PlusOutlined,
+    EditOutlined,
+    DeleteOutlined
+} from '@ant-design/icons';
 import Badge from "antd/es/badge/Badge";
+import ConfirmDeleteModal from "../../components/Modal/ConfirmDeleteModal";
+import CreateComment from "./Comments/CreateComment";
 
 const TicketDetails = () => {
 
@@ -21,10 +28,25 @@ const TicketDetails = () => {
     });
 
     if(error){
-        console.log(`Fetching Error: ${error}`);
+        console.log(`Ticket Fetching Error: ${error}`);
     }
 
     console.log(data)
+
+    const getComments = async () => {
+        const response = await fetch(`http://localhost:3000/api/tickets/${id}/comments`);
+        return await response.json();
+    }
+
+    const {data: commentData , error: commentError } = useQuery({
+        queryKey: ['comments'],
+        queryFn: getComments
+    })
+    if(commentError){
+        console.log(`Comment Fetching Error: ${commentError}`);
+    }
+
+    console.log(commentData)
 
   return (
     <div>
@@ -34,7 +56,7 @@ const TicketDetails = () => {
          : 
         <div className="ticket-container">
             <div style={{display: 'flex', gap: '15px'}}>
-                <h2>Ticket #: {data.TicketID}</h2>
+                <h2>Ticket # {data.TicketID}</h2>
                 <div style={{marginTop: '17.43px'}}>
                 { data.StatusName === 'Open' ? <Badge count={show ? 'Open' : 0} showZero color="#00be43ff" /> 
                 : data.StatusName === 'Closed' ? <Badge count={show ? 'Closed' : 0} showZero color="#fb3737ff" /> 
@@ -51,44 +73,71 @@ const TicketDetails = () => {
                 : ""
                     }
                 </div>
+                <div style={{display: 'flex', gap: 10}}>
+                    <h4>Assigned To: </h4>
+                    <p style={{marginTop: '18.62px'}}>{data.AssignedToName ? data.AssignedToName : "unassigned"}</p>
+                </div>
+                 <div style={{display: 'flex', gap: 10}}>
+                    <h4>Created At: </h4>
+                    <p style={{marginTop: '18.62px'}}>{new Date(data.CreatedAt).toLocaleString()}</p>
+                </div>
             </div>
 
-            <h2>{data.Title}</h2>
-            <div style={{display: 'flex', gap: 10}}>
-            <Card style={{width: 800, height: 300}}>
-                <h3>Description</h3><p>{data.Description}</p>
-            </Card>
-            <Card style={{width: 500, minHeight: 300}}>
-                <div style={{display: 'flex-column', justifyContent: 'space-evenly', flexWrap: 'wrap'}}>
-                    <div style={{display: 'flex', gap: 10}}>
-                        <h4>Assigned To: </h4>
-                        <p style={{marginTop: '18.62px'}}>{data.AssignedToName ? data.AssignedToName : "unassigned"}</p>
-                    </div>
-                    <div style={{display: 'flex', gap: 10}}>
-                        <h4>Created By: </h4>
-                        <p style={{marginTop: '18.62px'}}>{data.CreatedByName}</p>
-                    </div>
-                    <div style={{display: 'flex', gap: 10}}>
-                        <h4>Created At: </h4>
-                        <p style={{marginTop: '18.62px'}}>{data.CreatedAt}</p>
-                        </div>
-                    <div style={{display: 'flex', gap: 10}}>
-                        <h4>Category: </h4>
-                        <p style={{marginTop: '18.62px'}}>{data.CategoryName}</p>
-                    </div>
-                    {
-                        data.UpdatedAt ? 
-                        <div style={{display: 'flex', gap: 10}}>
-                        <h4>Updated At: </h4>
-                        <p style={{marginTop: '18.62px'}}>{data.UpdatedAt}</p>
-                        </div>
-                        :
-                        ""
-                    }
-                </div>
-            </Card>
-            </div>
+            <Flex gap="middle" className="title-line" justify="space-between">
+                <h2>{data.Title}</h2>
+                <Button className="ticket-edit-btn">Edit</Button>
+            </Flex>
             
+            <Card >
+                <div style={{display: 'flex', gap: 10}}>
+                        <div style={{display: 'flex', gap: 10}}>
+                            <h4>Created By: </h4>
+                            <p style={{marginTop: '18.62px'}}>{data.CreatedByName}</p>
+                        </div>
+                        <div style={{display: 'flex', gap: 10}}>
+                            <h4>Category: </h4>
+                            <p style={{marginTop: '18.62px'}}>{data.CategoryName}</p>
+                        </div>
+                        {
+                            data.UpdatedAt ? 
+                            <div style={{display: 'flex', gap: 10}}>
+                            <h4>Updated At: </h4>
+                            <p style={{marginTop: '18.62px'}}>{new Date(data.UpdatedAt).toLocaleString()}</p>
+                            </div>
+                            :
+                            ""
+                        }
+                </div>
+                <h3>Description</h3>
+                <p>{data.Description}</p>
+            </Card>
+            
+            <div className="comments-container">
+                {
+                    commentData && commentData.map((comment) => (
+                        <Card key={comment.TicketID} className="comment-card">
+                            <Flex vertical>
+                            <div className="comment-info">
+                                <p>By: {comment.FullName}</p>
+                                <p>At: {new Date(comment.CreatedAt).toLocaleString()}</p>
+                            </div>
+                            <div>
+                                {comment.Comment}
+                            </div>
+                            <div className="comment-edit-btn">
+                                <Button icon={<EditOutlined />}></Button>
+                                <ConfirmDeleteModal commentID={comment.CommentID}/>
+                            </div>
+                            </Flex>
+                        </Card>
+                    ))
+                }
+            </div>
+            <Tooltip placement="bottomRight"  title="Add Comment">
+                <div className="add-comment-btn">
+                    <CreateComment ticketID={id}/>
+                </div>
+            </Tooltip>
         </div> 
          
          }

@@ -11,6 +11,32 @@
 
 }
 
-.ticket-container {
-    
+.comments-container {
+    margin-top: 10px;
+}
+
+.comment-info {
+    display: flex;
+    gap: 10px;
+}
+
+.comment-card {
+    margin-top: 10px;
+}
+
+.ticket-edit-btn {
+    background-color: #001529;
+    color:white; 
+    margin-top: 8.715px;
+}
+
+.add-comment-btn {
+    margin-top: 10px;
+    float: right;
+}
+
+.comment-edit-btn {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-end;
 }
