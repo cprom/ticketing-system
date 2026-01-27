@@ -5,6 +5,7 @@ import Tickets from "./pages/Tickets/Tickets"
 import Profile from "./pages/Profile/Profile"
 import TicketDetails from "./pages/Tickets/TicketDetails"
 import UserContext from "./Context/UserContext"
+import TicketNew from "./pages/Tickets/TicketNew"
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard/>} />
             <Route path="/tickets" element={<Tickets/>} />
             <Route path="/tickets/:id" element={<TicketDetails/>} />
+            <Route path="/tickets/new" element={<TicketNew/>} />
             <Route path="/profile" element={<Profile/>} />
           </Route>
         </Routes>

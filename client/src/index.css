@@ -40,3 +40,7 @@
     gap: 5px;
     justify-content: flex-end;
 }
+
+.add-new-ticket-btn {
+    margin-bottom: 10px;
+}

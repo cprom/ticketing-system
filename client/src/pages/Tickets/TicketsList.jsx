@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { Spin } from "antd";
+import { useQuery } from "@tanstack/react-query";
+import { Button, Spin, Tooltip } from "antd";
 import { Table, Badge, Space, Switch } from 'antd';
-import Column from 'antd/es/table/Column';
+import {
+  PlusOutlined,
+} from '@ant-design/icons';
 
 const TicketsList = () => {
 
@@ -153,6 +155,7 @@ const TicketsList = () => {
              title: 'Created On',
              dataIndex: 'CreatedAt',
              key: 'CreatedAt',
+             render: (text) => new Date(text).toLocaleString(),
              sorter: (a, b) => a.CreatedAt - b.CreatedAt,   
         },
         {
@@ -171,6 +174,9 @@ const TicketsList = () => {
 
   return (
     <div>
+        <div className='add-new-ticket-btn'>
+            <Button color="default" variant='solid' icon={<PlusOutlined/>} href='/tickets/new'>New Ticket</Button>
+        </div>
         { isPending 
         ? <div className='spinner-container'><Spin /></div> 
         : <Table
