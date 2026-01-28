@@ -46,7 +46,8 @@ const TicketsList = () => {
         {
             title: 'Description',
             dataIndex: 'Description',
-            key: 'Description'
+            key: 'Description',
+            ellipsis: true
         },
         {
             title: 'Created By',
@@ -167,8 +168,6 @@ const TicketsList = () => {
             render: (text) =><a href={`/tickets/${text}`} >View</a>
         }
     ]
-
-
 
   return (
     <div>
