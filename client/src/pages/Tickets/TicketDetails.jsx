@@ -80,7 +80,7 @@ const TicketDetails = () => {
 
             <Flex gap="middle" className="title-line" justify="space-between">
                 <h2>{data.Title}</h2>
-                <Button className="ticket-edit-btn">Edit</Button>
+                <Button color="default" variant="solid" className="ticket-edit-btn" href={`/tickets/edit/${data.TicketID}`}>Edit</Button>
             </Flex>
             
             <Card >

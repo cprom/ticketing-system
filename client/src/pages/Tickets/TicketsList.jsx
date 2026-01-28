@@ -168,8 +168,6 @@ const TicketsList = () => {
         }
     ]
 
-
-
   return (
     <div>
         <div className='add-new-ticket-btn'>
