@@ -10,6 +10,7 @@ import {
 import Badge from "antd/es/badge/Badge";
 import ConfirmDeleteModal from "../../components/Modal/ConfirmDeleteModal";
 import CreateComment from "./Comments/CreateComment";
+import ConfirmTicketDeleteModal from "../../components/Modal/ConfirmTicketDeleteModal";
 
 const TicketDetails = () => {
 
@@ -80,7 +81,10 @@ const TicketDetails = () => {
 
             <Flex gap="middle" className="title-line" justify="space-between">
                 <h2>{data.Title}</h2>
-                <Button color="default" variant="solid" className="ticket-edit-btn" href={`/tickets/edit/${data.TicketID}`}>Edit</Button>
+                <div>
+                <Button color="default" variant="solid" className="ticket-edit-btn" href={`/tickets/edit/${data.TicketID}`} style={{marginRight: 10}}>Edit</Button>
+                <ConfirmTicketDeleteModal ticketID={data.TicketID}/>
+                </div>
             </Flex>
             
             <Card >
