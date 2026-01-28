@@ -43,7 +43,6 @@ const ConfirmTicketDeleteModal = ({ticketID, comments}) => {
     setIsModalOpen(false);
   };
 
-  console.log(comments)
   return (
     <>
      <Tooltip title="Delete Ticket" color="red" placement='bottomLeft'> <Button onClick={showModal} icon={<DeleteOutlined/>} type='primary' danger>

@@ -46,8 +46,6 @@ const TicketDetails = () => {
         console.log(`Comment Fetching Error: ${commentError}`);
     }
 
-    console.log(commentData)
-
   return (
     <div>
         {
