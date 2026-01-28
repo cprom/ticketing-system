@@ -6,12 +6,14 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 
+const apiUrl = import.meta.env.VITE_BASE_API_URL;
+
 const TicketsList = () => {
 
     const [show, setShow] = useState(true);
     const [fetchedData, setFetchData] = useState([]);
        const getTickets = async () => {
-        const response = await fetch(`http://localhost:3000/api/tickets/`);
+        const response = await fetch(`${apiUrl}/api/tickets/`);
         const results = await response.json();
         setFetchData(results)
         return results

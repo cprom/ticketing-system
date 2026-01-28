@@ -11,6 +11,7 @@ const { TextArea } = Input;
 
 import { useQuery } from "@tanstack/react-query";
 
+const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
 const TicketNew = () => {
     const navigate = useNavigate();
@@ -67,7 +68,7 @@ const TicketNew = () => {
       // Assign To
     const { data: userData, error: userDataError } = useQuery({
         queryKey: ['users'],
-        queryFn: () => getData(`http://localhost:3000/api/users`)
+        queryFn: () => getData(`${apiUrl}/api/users`)
     });
 
     if(userDataError){
@@ -80,7 +81,7 @@ const TicketNew = () => {
     // Priority
     const { data: priorityData, error: priorityDataError } = useQuery({
         queryKey: ['priorities'],
-        queryFn: () => getData('http://localhost:3000/api/priorities')
+        queryFn: () => getData(`${apiUrl}/api/priorities`)
     })
     
         if(priorityDataError){
@@ -93,7 +94,7 @@ const TicketNew = () => {
     // Category
     const { data: categoryData, error: categoryDataError } = useQuery({
         queryKey: ['categories'],
-        queryFn: () => getData('http://localhost:3000/api/categories')
+        queryFn: () => getData(`${apiUrl}/api/categories`)
     })
     
         if(categoryDataError){
@@ -106,7 +107,7 @@ const TicketNew = () => {
     // Statuses
         const { data: statusData, error: statusDataError } = useQuery({
         queryKey: ['statuses'],
-        queryFn: () => getData('http://localhost:3000/api/statuses')
+        queryFn: () => getData(`${apiUrl}/api/statuses`)
     })
     
         if(statusDataError){
@@ -173,7 +174,7 @@ const createNewTicket = async (title, description, currentUserId, assignToId, pr
   })
 
  try {
-    let response = await fetch(`http://localhost:3000/api/tickets/`, {
+    let response = await fetch(`${apiUrl}/api/tickets/`, {
     method: "POST",
     body: bodyContent,
     headers: headersList
