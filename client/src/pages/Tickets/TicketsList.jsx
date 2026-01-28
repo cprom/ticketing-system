@@ -46,7 +46,8 @@ const TicketsList = () => {
         {
             title: 'Description',
             dataIndex: 'Description',
-            key: 'Description'
+            key: 'Description',
+            ellipsis: true
         },
         {
             title: 'Created By',

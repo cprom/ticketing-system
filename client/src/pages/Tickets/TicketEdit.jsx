@@ -91,16 +91,6 @@ const TicketEdit = () => {
     }
   }, [ticketData, form]);
 
-  // 🔹 Update mutation
-//   const mutation = useMutation({
-//     mutationFn: updateTicket,
-//     onSuccess: () => {
-//       navigate(`/tickets/${id}`);
-//     }
-//   });
-
-   console.log(ticketData)
-
       // Assign To
     const { data: userData, error: userDataError } = useQuery({
         queryKey: ['userData'],
