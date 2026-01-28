@@ -9,6 +9,8 @@ import {
 import { useNavigate } from 'react-router';
 const { TextArea } = Input;
 
+import { useQuery } from "@tanstack/react-query";
+
 
 const TicketNew = () => {
     const navigate = useNavigate();
@@ -47,9 +49,67 @@ const TicketNew = () => {
     }
 
     const handleCreateBtnClick = () => {
-        createNewTicket(title, description, currentUserId, assignToId, priorityId, categoryId, statusId );
+        createNewTicket(title, description, currentUserId, assignToId, priorityId, categoryId, statusId);
         navigate('/tickets');
     }
+
+    const getData = async (url) => {
+    const response = await fetch(url);
+    return await response.json();
+    }
+
+      // Assign To
+    const { data: userData, error: userDataError } = useQuery({
+        queryKey: ['users'],
+        queryFn: () => getData(`http://localhost:3000/api/users`)
+    });
+
+    if(userDataError){
+        console.log(`UserData Fetching Error: ${userDataError}`);
+    }
+    
+    let assignOptions = [];
+    userData?.map((tech) => assignOptions.push({label: tech.FullName, value: tech.UserID}))
+
+    // Priority
+    const { data: priorityData, error: priorityDataError } = useQuery({
+        queryKey: ['priorities'],
+        queryFn: () => getData('http://localhost:3000/api/priorities')
+    })
+    
+        if(priorityDataError){
+        console.log(`priorityData Fetching Error: ${priorityDataError}`);
+    }
+
+    let priorityOptions = [];
+        priorityData?.map((priority) => priorityOptions.push({label: priority.PriorityName, value: priority.PriorityID}))
+
+    // Category
+    const { data: categoryData, error: categoryDataError } = useQuery({
+        queryKey: ['categories'],
+        queryFn: () => getData('http://localhost:3000/api/categories')
+    })
+    
+        if(categoryDataError){
+        console.log(`categoryData Fetching Error: ${categoryDataError}`);
+    }
+
+    let categoryOptions = [];
+        categoryData?.map((category) => categoryOptions.push({label: category.CategoryName, value: category.CategoryID}))
+
+    // Statuses
+        const { data: statusData, error: statusDataError } = useQuery({
+        queryKey: ['statuses'],
+        queryFn: () => getData('http://localhost:3000/api/`statuses`')
+    })
+    
+        if(statusDataError){
+        console.log(`statusData Fetching Error: ${statusDataError}`);
+    }
+
+    let statusOptions = [];
+        statusData?.map((status) => statusOptions.push({label: status.StatusName, value: status.StatusID}))
+
 
   return (
     <div>
@@ -67,16 +127,16 @@ const TicketNew = () => {
                 <Input onChange={handleTitleChange}  />
             </Form.Item>
             <Form.Item label="Assign To">
-                <Select onChange={handleAssignToChange} options={[{ label: 'Sys Admin', value: 4 }]} style={{width: 250}}/>
+                <Select onChange={handleAssignToChange} options={assignOptions} style={{width: 250}}/>
             </Form.Item>
             <Form.Item name={['Priority']} label="Priority" rules={[{required: true}]}>
-                <Select onChange={handlePriorityChange} options={[{ label: 'Medium', value: 2 }]} style={{width: 250}}/>
+                <Select onChange={handlePriorityChange} options={priorityOptions} style={{width: 250}}/>
             </Form.Item>
             <Form.Item name={['Category']} label="Category" rules={[{required: true}]}>
-                <Select onChange={handleCategoryChange} options={[{ label: 'Hardware', value: 1 }]} style={{width: 250}}/>
+                <Select onChange={handleCategoryChange} options={categoryOptions} style={{width: 250}}/>
             </Form.Item>
             <Form.Item name={['Status']} label="Status" rules={[{required: true}]}>
-                <Select onChange={handleStatusChange} options={[{ label: 'Open', value: 1 }]} style={{width: 250}}/>
+                <Select onChange={handleStatusChange} options={statusOptions} style={{width: 250}}/>
             </Form.Item>
             <Form.Item name={['Description']} label="Description" rules={[{required: true}]}>
                 <TextArea onChange={handleDescriptionChange} style={{ height: 300 }} />
