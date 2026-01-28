@@ -168,9 +168,7 @@ const TicketsList = () => {
         }
     ]
 
-    const onChange = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
-    };
+
 
   return (
     <div>
@@ -182,7 +180,6 @@ const TicketsList = () => {
         : <Table
         columns={columns}
         dataSource={fetchedData}
-        onChange={onChange}
         showSorterTooltip={{target: 'sorter-icon'}}
         rowKey={record => record.TicketID}
         />

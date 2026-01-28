@@ -48,9 +48,15 @@ const TicketNew = () => {
         setDescription(e.target.value)
     }
 
-    const handleCreateBtnClick = () => {
-        createNewTicket(title, description, currentUserId, assignToId, priorityId, categoryId, statusId);
-        navigate('/tickets');
+    const handleCreateBtnClick = async () => {
+        try {
+            const result =  await createNewTicket(title, description, currentUserId, assignToId, priorityId, categoryId, statusId );
+            navigate(`/tickets/${result.ticketId}`);
+        }
+        catch (error) {
+            console.log(error);
+        }
+        
     }
 
     const getData = async (url) => {
@@ -100,7 +106,7 @@ const TicketNew = () => {
     // Statuses
         const { data: statusData, error: statusDataError } = useQuery({
         queryKey: ['statuses'],
-        queryFn: () => getData('http://localhost:3000/api/`statuses`')
+        queryFn: () => getData('http://localhost:3000/api/statuses')
     })
     
         if(statusDataError){
@@ -121,9 +127,10 @@ const TicketNew = () => {
             initialValues={{ size: componentSize }}
             onValuesChange={onFormLayoutChange}
             size={componentSize}
+            onFinish={handleCreateBtnClick}
         
         >
-            <Form.Item name={['Title']} label="Title" rules={[{required: true, message: 'Title is required'}]}>
+            <Form.Item name={['Title']} label="Title" rules={[{required: true}]}>
                 <Input onChange={handleTitleChange}  />
             </Form.Item>
             <Form.Item label="Assign To">
@@ -142,7 +149,7 @@ const TicketNew = () => {
                 <TextArea onChange={handleDescriptionChange} style={{ height: 300 }} />
             </Form.Item>
             <Form.Item label={null}>
-                <Button color="default" variant="solid" onClick={handleCreateBtnClick} htmlType='submit'>
+                <Button color="default" variant="solid" htmlType='submit'>
                     Create
                 </Button>
             </Form.Item>
@@ -172,12 +179,13 @@ const createNewTicket = async (title, description, currentUserId, assignToId, pr
     headers: headersList
   })
 
-  if(response.ok){
-    console.log(`New ticket added successfully.`)
-    return response.status;
-  }else {
-    console.log(`New Ticket creation failed`, response.statusText);
+   if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || 'Failed to create ticket');
   }
+
+  // success
+  return await response.json();
  }
   catch(error){
     console.error('Network Error', error);
