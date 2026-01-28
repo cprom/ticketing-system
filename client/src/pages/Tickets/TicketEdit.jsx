@@ -12,6 +12,7 @@ const { TextArea } = Input;
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from 'react-router'
 
+const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
 const TicketEdit = () => {
     const [form] = Form.useForm();
@@ -70,7 +71,7 @@ const TicketEdit = () => {
 
     const {data: ticketData, error: ticketDataError} = useQuery({
         queryKey: ['ticketData', id],
-        queryFn: () => getData(`http://localhost:3000/api/tickets/${id}`),
+        queryFn: () => getData(`${apiUrl}/api/tickets/${id}`),
         enabled: !!id
     })
 
@@ -94,7 +95,7 @@ const TicketEdit = () => {
       // Assign To
     const { data: userData, error: userDataError } = useQuery({
         queryKey: ['userData'],
-        queryFn: () => getData(`http://localhost:3000/api/users`)
+        queryFn: () => getData(`${apiUrl}/api/users`)
     });
 
     if(userDataError){
@@ -107,7 +108,7 @@ const TicketEdit = () => {
     // Priority
     const { data: priorityData, error: priorityDataError } = useQuery({
         queryKey: ['priorityData'],
-        queryFn: () => getData('http://localhost:3000/api/priorities')
+        queryFn: () => getData(`${apiUrl}/api/priorities`)
     })
     
         if(priorityDataError){
@@ -120,7 +121,7 @@ const TicketEdit = () => {
     // Category
     const { data: categoryData, error: categoryDataError } = useQuery({
         queryKey: ['categoryData'],
-        queryFn: () => getData('http://localhost:3000/api/categories')
+        queryFn: () => getData(`${apiUrl}/api/categories`)
     })
     
         if(categoryDataError){
@@ -133,7 +134,7 @@ const TicketEdit = () => {
     // Statuses
         const { data: statusData, error: statusDataError } = useQuery({
         queryKey: ['statusData'],
-        queryFn: () => getData('http://localhost:3000/api/statuses')
+        queryFn: () => getData(`${apiUrl}/api/statuses`)
     })
     
         if(statusDataError){
@@ -201,7 +202,7 @@ const updateTicket = async (title, description, currentUserId, assignToId, prior
   })
 
  try {
-    let response = await fetch(`http://localhost:3000/api/tickets/${id}`, {
+    let response = await fetch(`${apiUrl}/api/tickets/${id}`, {
     method: "PUT",
     body: bodyContent,
     headers: headersList

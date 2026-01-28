@@ -12,13 +12,15 @@ import ConfirmDeleteModal from "../../components/Modal/ConfirmDeleteModal";
 import CreateComment from "./Comments/CreateComment";
 import ConfirmTicketDeleteModal from "../../components/Modal/ConfirmTicketDeleteModal";
 
+const apiUrl = import.meta.env.VITE_BASE_API_URL;
+
 const TicketDetails = () => {
 
     const { id } = useParams();
     const [show, setShow] = useState(true);
 
     const getTickets = async () => {
-    const response = await fetch(`http://localhost:3000/api/tickets/${id}`);
+    const response = await fetch(`${apiUrl}/api/tickets/${id}`);
     return await response.json();
     }
 
@@ -32,7 +34,7 @@ const TicketDetails = () => {
     }
 
     const getComments = async () => {
-        const response = await fetch(`http://localhost:3000/api/tickets/${id}/comments`);
+        const response = await fetch(`${apiUrl}/api/tickets/${id}/comments`);
         return await response.json();
     }
 
