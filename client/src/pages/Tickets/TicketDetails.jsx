@@ -44,6 +44,8 @@ const TicketDetails = () => {
         console.log(`Comment Fetching Error: ${commentError}`);
     }
 
+    console.log(commentData)
+
   return (
     <div>
         {
@@ -83,7 +85,7 @@ const TicketDetails = () => {
                 <h2>{data.Title}</h2>
                 <div>
                 <Button color="default" variant="solid" className="ticket-edit-btn" href={`/tickets/edit/${data.TicketID}`} style={{marginRight: 10}}>Edit</Button>
-                <ConfirmTicketDeleteModal ticketID={data.TicketID}/>
+                <ConfirmTicketDeleteModal ticketID={data.TicketID} comments={commentData}/>
                 </div>
             </Flex>
             
