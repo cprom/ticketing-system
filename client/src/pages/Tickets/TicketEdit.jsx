@@ -9,7 +9,7 @@ import {
 import { useNavigate } from 'react-router';
 const { TextArea } = Input;
 
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from 'react-router'
 
 
