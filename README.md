@@ -108,3 +108,18 @@ PUT /tickets/comments/:commentId
 
 ### Delete comment
 DELETE /tickets/comments/:commentId
+
+## Priorities
+GET /priorities
+
+GET priorities/:id
+
+## Category
+GET   /categories
+
+GET   /categories/:id
+
+## Status
+GET   /statuses
+
+GET   /statuses/:id

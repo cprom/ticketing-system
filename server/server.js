@@ -4,7 +4,9 @@ import 'dotenv/config';
 import cors from 'cors'
 import ticketsRoutes from './routes/tickets.js';
 import usersRoutes from'./routes/users.js';
-
+import priorityRoutes from './routes/priorities.js'
+import categoryRoutes from './routes/categories.js'
+import statusRoutes from './routes/statuses.js'
 
 
 
@@ -15,6 +17,9 @@ app.use(express.urlencoded({extended: true}))
 
 app.use('/api/tickets', ticketsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/priorities', priorityRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/statuses', statusRoutes);
 
 app.get('/', (_, res) => res.send('Ticketing API running'));
 

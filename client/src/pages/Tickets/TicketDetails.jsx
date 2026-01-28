@@ -13,12 +13,12 @@ import CreateComment from "./Comments/CreateComment";
 
 const TicketDetails = () => {
 
-        const { id } = useParams();
-        const [show, setShow] = useState(true);
+    const { id } = useParams();
+    const [show, setShow] = useState(true);
 
-        const getTickets = async () => {
-        const response = await fetch(`http://localhost:3000/api/tickets/${id}`);
-        return await response.json();
+    const getTickets = async () => {
+    const response = await fetch(`http://localhost:3000/api/tickets/${id}`);
+    return await response.json();
     }
 
     const { data, error, isPending } = useQuery({
