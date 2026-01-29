@@ -1,9 +1,10 @@
 import React from 'react'
 import { useQuery } from '@tanstack/react-query';
 
-function Profile() {
-
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
+
+function Users() {
+
 
     const getUser = async () => {
         const response = await fetch(`${apiUrl}/api/users`);
@@ -11,7 +12,7 @@ const apiUrl = import.meta.env.VITE_BASE_API_URL;
     }
 
     const { data, error, isPending } = useQuery({
-        queryKey: ['users'],
+        queryKey: ['tickets'],
         queryFn: getUser
     });
 
@@ -22,9 +23,9 @@ const apiUrl = import.meta.env.VITE_BASE_API_URL;
     console.log(data)
   return (
     <div>
-      Profile
+      Users
     </div>
   )
 }
 
-export default Profile
+export default Users

@@ -5,6 +5,8 @@ import {
     DeleteOutlined
 } from '@ant-design/icons';
 
+const apiUrl = import.meta.env.VITE_BASE_API_URL;
+
 const ConfirmTicketDeleteModal = ({ticketID, comments}) => {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,7 +17,7 @@ const ConfirmTicketDeleteModal = ({ticketID, comments}) => {
     if(comments.length > 0){
       comments.forEach(async (comment) => {
         try {
-        const response = await fetch(`http://localhost:3000/api/tickets/comments/${comment.CommentID}`, {
+        const response = await fetch(`${apiUrl}/api/tickets/comments/${comment.CommentID}`, {
           method: "DELETE",
         })
         if(response.ok){
@@ -62,7 +64,7 @@ const ConfirmTicketDeleteModal = ({ticketID, comments}) => {
 
 const deleteTicket = async (id) => {
  try {
-   const response = await fetch(`http://localhost:3000/api/tickets/${id}`, {
+   const response = await fetch(`${apiUrl}/api/tickets/${id}`, {
     method: "DELETE",
   })
   if(response.ok){

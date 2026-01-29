@@ -1,5 +1,5 @@
 // src/navigation.js
-import { BugOutlined, HomeOutlined, PieChartOutlined, UserOutlined } from '@ant-design/icons';
+import { BugOutlined, HomeOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 
 export const navItems = [
   {
@@ -20,5 +20,11 @@ export const navItems = [
     label: 'Profile',
     path: '/profile',
   },
+  {
+    key: '4',
+    icon: <TeamOutlined/>,
+    label: 'Users',
+    path: '/users',
+  }
   // Add more items as needed
 ];
