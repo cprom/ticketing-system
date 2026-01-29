@@ -11,6 +11,7 @@ import Badge from "antd/es/badge/Badge";
 import ConfirmDeleteModal from "../../components/Modal/ConfirmDeleteModal";
 import CreateComment from "./Comments/CreateComment";
 import ConfirmTicketDeleteModal from "../../components/Modal/ConfirmTicketDeleteModal";
+import EditComment from "./Comments/EditComment";
 
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
@@ -109,8 +110,8 @@ const TicketDetails = () => {
                             ""
                         }
                 </div>
-                <h3>Description</h3>
                 <p>{data.Description}</p>
+                <h3>Description</h3>
             </Card>
             
             <div className="comments-container">
@@ -126,7 +127,7 @@ const TicketDetails = () => {
                                 {comment.Comment}
                             </div>
                             <div className="comment-edit-btn">
-                                <Button icon={<EditOutlined />}></Button>
+                                <EditComment commentID={comment.CommentID} commentText={comment.Comment}/>
                                 <ConfirmDeleteModal commentID={comment.CommentID}/>
                             </div>
                             </Flex>
