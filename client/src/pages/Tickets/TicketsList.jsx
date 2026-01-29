@@ -159,7 +159,7 @@ const TicketsList = () => {
              dataIndex: 'CreatedAt',
              key: 'CreatedAt',
              render: (text) => new Date(text).toLocaleString(),
-             sorter: (a, b) => a.CreatedAt - b.CreatedAt,   
+             sorter: (a, b) => new Date(a.CreatedAt) - new Date(b.CreatedAt),   
         },
         {
             title: 'Action',
