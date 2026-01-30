@@ -10,8 +10,7 @@ const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
 const UsersList = () => {
 
-      const [show, setShow] = useState(true);
-      const [fetchedData, setFetchData] = useState([]);
+    const [fetchedData, setFetchData] = useState([]);
 
     const getUser = async () => {
         const response = await fetch(`${apiUrl}/api/users`);
@@ -36,6 +35,7 @@ const UsersList = () => {
             dataIndex: 'UserID',
             defaultSortOrder: 'descend',
             key: 'UserID',
+            width: 200,
             sorter: (a,b) => a.UserID - b.UserID,
             render: text => <a href={`/users/${text}`} >{text}</a>
         },
@@ -49,21 +49,20 @@ const UsersList = () => {
         {
             title: 'Email',
             dataIndex: 'Email',
-            key: 'Email',
-            ellipsis: true
+            key: 'Email'
         },
         {
             title: 'Role',
             dataIndex: 'RoleID',
             key: 'RoleID',
             render: text => 
-              text === 1 ? "System Admin"
+              text === 1 ? "Admin"
             : text === 2 ? "Agent"
             : text === 3 ? " User"
             : "",
              filters: [
                 {
-                    text: 'System Admin',
+                    text: 'Admin',
                     value: '1'
                 },
                 {
@@ -87,12 +86,11 @@ const UsersList = () => {
         }
     ]
 
-    console.log(data)
   return (
     <div>
-       <div className='add-new-ticket-btn'>
-            <Button color="default" variant='solid' icon={<PlusOutlined/>} href='/user/new'>New User</Button>
-        </div>
+      <div className='add-new-ticket-btn'>
+        <Button color="default" variant='solid' icon={<PlusOutlined/>} href='/user/new'>New User</Button>
+      </div>
         { isPending 
         ? <div className='spinner-container'><Spin /></div> 
         : <Table
