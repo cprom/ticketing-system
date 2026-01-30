@@ -53,9 +53,29 @@ const UsersList = () => {
             ellipsis: true
         },
         {
-            title: 'RoleID',
+            title: 'Role',
             dataIndex: 'RoleID',
-            key: 'RoleID'
+            key: 'RoleID',
+            render: text => 
+              text === 1 ? "System Admin"
+            : text === 2 ? "Agent"
+            : text === 3 ? " User"
+            : "",
+             filters: [
+                {
+                    text: 'System Admin',
+                    value: '1'
+                },
+                {
+                    text: 'Agent',
+                    value: '2'
+                },
+                {
+                    text: 'User',
+                    value: '3'
+                }
+            ],
+            onFilter: (value, record) => record.RoleID === Number(value),
         },
         {
             title: 'Action',
