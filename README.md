@@ -48,12 +48,21 @@ Run Docker Command:
 ## 📡 Ticketing System API Routes
 
 **Base URL**
+
 http://localhost:3000/api
+
 ---
 ## 👤 Users
 
 ### Get all users
 GET /users
+
+### Get users by ID
+GET /users/:id
+
+### Create users
+POST /users
+
 ---
 ## 🎫 Tickets
 
@@ -65,6 +74,15 @@ GET /tickets/:id
 
 ### Create a new ticket
 POST /tickets
+
+```json
+{
+  "name": "Chen Prom",
+  "email": "cprom@email.com",
+  "passwordHash": "hashed_password",
+  "roleId": 1
+}
+```
 
 **Request Body**
 ```json
