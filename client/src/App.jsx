@@ -8,6 +8,7 @@ import UserContext from "./Context/UserContext"
 import TicketNew from "./pages/Tickets/TicketNew"
 import TicketEdit from "./pages/Tickets/TicketEdit"
 import Users from "./pages/Users/Users"
+import UserDetails from "./pages/Users/UserDetails"
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
             <Route path="/tickets/edit/:id" element={<TicketEdit/>} />
             <Route path="/profile" element={<Profile/>} />
             <Route path="/users" element={<Users/>} />
+            <Route path="/user/:id" element={<UserDetails/>} />
           </Route>
         </Routes>
         </UserContext.Provider>

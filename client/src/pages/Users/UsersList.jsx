@@ -37,14 +37,13 @@ const UsersList = () => {
             key: 'UserID',
             width: 200,
             sorter: (a,b) => a.UserID - b.UserID,
-            render: text => <a href={`/users/${text}`} >{text}</a>
+            render: text => <a href={`/user/${text}`} >{text}</a>
         },
         {
             title: 'Full Name',
             dataIndex: 'FullName',
             key: 'FullName',
             sorter: (a,b) => a.FullName - b.FullName,
-            render: text => <a href={`/users/${text}`} >{text}</a>
         },
         {
             title: 'Email',
@@ -82,7 +81,7 @@ const UsersList = () => {
             key: 'UserID',
             fixed: 'end',
             width: 100,
-            render: (text) =><a href={`/users/${text}`} >View</a>
+            render: (text) =><a href={`/user/${text}`} >View</a>
         }
     ]
 
