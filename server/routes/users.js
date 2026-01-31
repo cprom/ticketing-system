@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
     await poolConnect;
     const result = await pool.request()
     .input('FullName', sql.VarChar, name)
-    .input('Email', sql.Text, email)
+    .input('Email', sql.VarChar(255), email)
     .input('PasswordHash', sql.Text, passwordHash)
     .input('RoleID', sql.Int, roleId)
     .query(`
