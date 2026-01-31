@@ -40,4 +40,29 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// POST /api/users
+router.post('/', async (req, res) => {
+  
+  const { name, email, passwordHash, roleId } = req.body || {};
+  try {
+    await poolConnect;
+    const result = await pool.request()
+    .input('FullName', sql.VarChar, name)
+    .input('Email', sql.Text, email)
+    .input('PasswordHash', sql.Text, passwordHash)
+    .input('RoleID', sql.Int, roleId)
+    .query(`
+      INSERT INTO Users
+      (FullName, Email, PasswordHash, RoleID)
+      VALUES
+      (@FullName, @Email, @PasswordHash, @RoleID);
+      SELECT SCOPE_IDENTITY() AS UserID;
+      `);
+      res.status(201).json({userId: result.recordset[0].UserID});
+    }catch (err){
+      res.status(500).json({ error: err.message });
+    }
+});
+
+
 export default router;
