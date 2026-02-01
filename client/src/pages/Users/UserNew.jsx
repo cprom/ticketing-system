@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Button, Modal, Input, Form, Select } from 'antd';
 import {
@@ -9,13 +9,12 @@ import UserContext from '../../Context/UserContext';
 
 const UserNew = () => {
     const navigate = useNavigate();  
-    const currentUser = useContext(UserContext)
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('');
     const [passwordHash, setPasswordHash] = useState('');
     const [componentSize, setComponentSize] = useState('default');
-
+    const [emailExist, setEmailExist] = useState(false);
 
     const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -39,7 +38,7 @@ const UserNew = () => {
 
     const handleCreateBtnClick = async () => {
     try {
-        const result = await CreateNewUser(userName, email, passwordHash, role);
+        const result = await CreateNewUser(userName, email, passwordHash, role, setEmailExist);
         navigate(`/user/${result.userId}`)
     }
     catch (err){
@@ -83,6 +82,7 @@ const UserNew = () => {
             </Form.Item>
             <Form.Item label="Email">
                 <Input type="email" onChange={handleEmailChange}/>
+                <span>{emailExist ? <span style={{color: 'red'}}>Email Aleardy exist.</span> : ''}</span>
             </Form.Item>
             <Form.Item name={['Role']} label="Role" rules={[{required: true}]}>
                 <Select onChange={handleRoleChange} options={roleOptionsParsed} style={{width: 250}}/>
@@ -100,7 +100,7 @@ const UserNew = () => {
   )
 }
 
-const CreateNewUser = async (userName, email, passwordHash, role) => {
+const CreateNewUser = async (userName, email, passwordHash, role, setEmailExist) => {
   let headersList = {
  "Content-Type": "application/json"
 }
@@ -119,6 +119,10 @@ const CreateNewUser = async (userName, email, passwordHash, role) => {
   })
 
 if (!response.ok) {
+    if (response.status === 409 ) {
+      setEmailExist(true);
+      return;
+    }
     const errorText = await response.text();
     throw new Error(errorText || 'Failed to create ticket');
   }
