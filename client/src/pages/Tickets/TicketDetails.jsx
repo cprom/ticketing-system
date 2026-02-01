@@ -110,8 +110,8 @@ const TicketDetails = () => {
                             ""
                         }
                 </div>
-                <p>{data.Description}</p>
                 <h3>Description</h3>
+                <p>{data.Description}</p>
             </Card>
             
             <div className="comments-container">

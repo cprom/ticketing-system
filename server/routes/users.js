@@ -40,4 +40,38 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// POST /api/users
+router.post('/', async (req, res) => {
+  
+  const { name, email, passwordHash, roleId } = req.body || {};
+  try {
+    await poolConnect;
+    const result = await pool.request()
+    .input('FullName', sql.VarChar, name)
+    .input('Email', sql.VarChar(255), email)
+    .input('PasswordHash', sql.Text, passwordHash)
+    .input('RoleID', sql.Int, roleId)
+    .query(`
+      INSERT INTO Users
+      (FullName, Email, PasswordHash, RoleID)
+      VALUES
+      (@FullName, @Email, @PasswordHash, @RoleID);
+      SELECT SCOPE_IDENTITY() AS UserID;
+      `);
+      res.status(201).json({userId: result.recordset[0].UserID});
+    }catch (err){
+       if (err.number === 2627 || err.number === 2601) {
+    return res.status(409).json({
+      code: 'EMAIL_EXISTS',
+      message: 'An account with this email already exists.'
+    });
+  }
+
+  res.status(500).json({
+    message: 'Something went wrong. Please try again.'
+  });
+    }
+});
+
+
 export default router;
