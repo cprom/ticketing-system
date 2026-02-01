@@ -60,7 +60,16 @@ router.post('/', async (req, res) => {
       `);
       res.status(201).json({userId: result.recordset[0].UserID});
     }catch (err){
-      res.status(500).json({ error: err.message });
+       if (err.number === 2627 || err.number === 2601) {
+    return res.status(409).json({
+      code: 'EMAIL_EXISTS',
+      message: 'An account with this email already exists.'
+    });
+  }
+
+  res.status(500).json({
+    message: 'Something went wrong. Please try again.'
+  });
     }
 });
 
