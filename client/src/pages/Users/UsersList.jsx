@@ -40,10 +40,16 @@ const UsersList = () => {
             render: text => <a href={`/user/${text}`} >{text}</a>
         },
         {
-            title: 'Full Name',
-            dataIndex: 'FullName',
-            key: 'FullName',
-            sorter: (a,b) => a.FullName - b.FullName,
+            title: 'First Name',
+            dataIndex: 'FirstName',
+            key: 'FirstName',
+            sorter: (a,b) => a.FirstName - b.FirstName,
+        },
+        {
+            title: 'Last Name',
+            dataIndex: 'LastName',
+            key: 'LastName',
+            sorter: (a,b) => a.LastName - b.LastName,
         },
         {
             title: 'Email',

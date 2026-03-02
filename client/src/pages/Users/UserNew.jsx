@@ -27,9 +27,9 @@ const UserNew = () => {
     setComponentSize(size);
     };
 
-    // const handleUserNameChange = (e) => {
-    // setUserName(e.target.value);
-    // }
+    const handleUserNameChange = (e) => {
+    setUserName(e.target.value);
+    }
 
     const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -74,8 +74,8 @@ const UserNew = () => {
 
     const handleCreateBtnClick = async () => {
     try {
-        const result = await CreateNewUser(firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash, setEmailExist);
-        navigate(`/user/${result}`)
+        const result = await CreateNewUser(userName, firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash, setEmailExist);
+        navigate(`/user/${result.userId}`)
     }
     catch (err){
         console.log(err);
@@ -113,9 +113,9 @@ const UserNew = () => {
             onFinish={handleCreateBtnClick}
         
         >
-            {/* <Form.Item name={['FullName']} label="Full Name" rules={[{required: true}]}>
+            <Form.Item name={['FullName']} label="Full Name" rules={[{required: true}]}>
                 <Input onChange={handleUserNameChange}  />
-            </Form.Item> */}
+            </Form.Item>
             <Form.Item name={['FirstName']} label="First Name" rules={[{required: true}]}>
                 <Input onChange={handleFirstNameChange}  />
             </Form.Item>
@@ -138,7 +138,7 @@ const UserNew = () => {
             <Form.Item name={['JobTitle']} label="Job Title" rules={[{required: false}]}>
                 <Input onChange={handleJobTitleChange}  />
             </Form.Item>
-            <Form.Item name={['Department']} label="Department" rules={[{required: false}]}>
+            <Form.Item name={['Department']} label="Department" rules={[{required: true}]}>
                 <Select onChange={handleDepartmentChange} options={roleOptionsParsed} style={{width: 250}}/>
             </Form.Item>
             <Form.Item name={['Manager']} label="Manager" rules={[{required: false}]}>
@@ -157,11 +157,12 @@ const UserNew = () => {
   )
 }
 
-const CreateNewUser = async (firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash,  setEmailExist) => {
+const CreateNewUser = async (userName, firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash,  setEmailExist) => {
   let headersList = {
  "Content-Type": "application/json"
 }
   let bodyContent = JSON.stringify({
+    name: userName,
     firstName: firstName,
     lastName: lastName,
     address: address,

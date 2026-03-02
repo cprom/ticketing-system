@@ -6,7 +6,7 @@ const masterConfig = {
   password: process.env.DB_PASSWORD,
   server: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT),
-  database: 'TicketingSystemA',
+  database: 'master',
   options: {
     encrypt: true,
     trustServerCertificate: true
@@ -156,10 +156,10 @@ async function init() {
 
       IF NOT EXISTS (SELECT 1 FROM Users)
         INSERT INTO Users 
-        (FullName, FirstName, LastName, Email, PasswordHash, RoleID, JobTitle, DepartmentID, PhoneNumber, Address, ProfileImg)
+        ( FullName, FirstName, LastName, Email, PasswordHash, RoleID, JobTitle, DepartmentID, PhoneNumber, Address, ProfileImg)
         VALUES
-        ('System Admin', 'System', 'Admin', 'admin@tickets.local', 'hashed_password', 1, 'Sys Admin', 1, '555-555-5555', '123 Test Street City CA 90805','image/url/1'),
-        ('Support Agent', 'Support','Agent', 'agent@tickets.local', 'hashed_password', 2, 'Account Manager',5, '555-555-5555', '123 Test Street City CA 90805','image/url/1'),
+        ('System Admin','System', 'Admin', 'admin@tickets.local', 'hashed_password', 1, 'Sys Admin', 1, '555-555-5555', '123 Test Street City CA 90805','image/url/1'),
+        ('Support Agent','Support','Agent', 'agent@tickets.local', 'hashed_password', 2, 'Account Manager',5, '555-555-5555', '123 Test Street City CA 90805','image/url/1'),
         ('End User','End','User', 'user@tickets.local', 'hashed_password', 3, 'Accountant', 1, '222-222-2222', '124 Test1 Street City CA 90805','image/url/2'),
         ('Kaylie Prom','Kaylie','Prom', 'kprom@tickets.local', 'hashed_password', 3, 'Vice President', 6, '111-111-1111', '125 Test2 Street City CA 90805','image/url/3'),
         ('Bella Prom','Bella','Prom', 'bprom@tickets.local', 'hashed_password', 2, 'CEO', 1, '333-333-3333', '127 Test3 Street City CA 90805','image/url/4');

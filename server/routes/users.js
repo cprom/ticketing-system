@@ -7,7 +7,7 @@ router.get('/', async (_, res) => {
   try {
     await poolConnect;
     const result = await pool.request().query(
-      'SELECT UserID, FirstName, LastName, Email, RoleID, JobTitle, DepartmentID, PhoneNumber, Address, ProfileImg, ManagerID FROM Users'
+      'SELECT FullName, UserID, FirstName, LastName, Email, RoleID, JobTitle, DepartmentID, PhoneNumber, Address, ProfileImg, ManagerID FROM Users'
     );
     res.json(result.recordset);
     console.log(result)
@@ -25,6 +25,7 @@ router.get('/:id', async (req, res) => {
         .query(`
             SELECT
                 t.UserID,
+                t.FullName,
                 t.FirstName,
                 t.LastName,
                 t.Email,
@@ -50,10 +51,11 @@ router.get('/:id', async (req, res) => {
 // POST /api/users
 router.post('/', async (req, res) => {
   
-  const { firstName, lastName, address, phoneNumber, email, roleId, jobTitle, departmentId,  managerId,  passwordHash } = req.body || {};
+  const {name, firstName, lastName, address, phoneNumber, email, roleId, jobTitle, departmentId,  managerId,  passwordHash } = req.body || {};
   try {
     await poolConnect;
     const result = await pool.request()
+    .input('FullName',sql.VarChar, name )
     .input('FirstName', sql.VarChar(30), firstName)
     .input('LastName', sql.VarChar(30), lastName)
     .input('Address', sql.VarChar(500), address)
@@ -66,9 +68,9 @@ router.post('/', async (req, res) => {
     .input('PasswordHash', sql.Text, passwordHash)
     .query(`
       INSERT INTO Users
-      ( FirstName, LastName, Address, PhoneNumber, Email, RoleID, JobTitle, DepartmentID, ManagerID, PasswordHash )
+      ( FullName, FirstName, LastName, Address, PhoneNumber, Email, RoleID, JobTitle, DepartmentID, ManagerID, PasswordHash )
       VALUES
-      (@FirstName, @LastName, @Address, @PhoneNumber, @Email, @RoleID, @JobTitle, @DepartmentID, @ManagerID, @PasswordHash );
+      (@FullName, @FirstName, @LastName, @Address, @PhoneNumber, @Email, @RoleID, @JobTitle, @DepartmentID, @ManagerID, @PasswordHash );
       SELECT SCOPE_IDENTITY() AS UserID;
       `);
       res.status(201).json({userId: result.recordset[0].UserID});
