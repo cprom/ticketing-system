@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
 import { Button, Modal, Input, Form, Select } from 'antd';
 import {
   PlusOutlined,
 } from '@ant-design/icons';
 
 import UserContext from '../../Context/UserContext';
+
+const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
 const UserNew = () => {
     const navigate = useNavigate();  
@@ -77,23 +80,62 @@ const UserNew = () => {
     }
   }
 
-  const roleOptions = [
-    {
-        RoleID: 1,
-        RoleName: 'Admin'
-    },
-    {
-        RoleID: 2,
-        RoleName: 'Agent'
-    },
-    {
-        RoleID: 3,
-        RoleName: 'User'
-    },
-  ]
+      const getRolesOptions = async () => {
+        const response = await fetch(`${apiUrl}/api/roles`);
+        const results = await response.json();
+        return results
+    }
+
+    const { data, error } = useQuery({
+        queryKey: ['roles'],
+        queryFn: getRolesOptions
+    });
+
+    if(error){
+        console.log(`Roles Fetching Error: ${error}`);
+    }
+
+        const getUser = async () => {
+            const response = await fetch(`${apiUrl}/api/users`);
+            const results = await response.json();
+            return results
+        }
+    
+        const { data:userData, error:userDataError } = useQuery({
+            queryKey: ['users'],
+            queryFn: getUser
+        });
+    
+        if(error){
+            console.log(`User Fetching Error: ${userDataError}`);
+        }
+
+        const getDepartments = async () => {
+            const response = await fetch(`${apiUrl}/api/departments`);
+            const results = await response.json();
+            return results
+        }
+    
+        const { data:departmentData, error:departmentDataError } = useQuery({
+            queryKey: ['departments'],
+            queryFn: getDepartments
+        });
+    
+        if(error){
+            console.log(`User Fetching Error: ${departmentDataError}`);
+        }
+
+
+
 
   let roleOptionsParsed = [];
-  roleOptions?.map((role) => roleOptionsParsed.push({label: role.RoleName, value: role.RoleID}))
+  data?.map((role) => roleOptionsParsed.push({label: role.RoleName, value: role.RoleID}))
+
+  let managerOptionsParsed = [];
+  userData?.map((manager) => managerOptionsParsed.push({label: manager.FullName, value: manager.UserID}))
+  
+  let departmentOptionsParsed = [];
+  departmentData?.map((department) => departmentOptionsParsed.push({label: department.DepartmentName, value: department.DepartmentID}))
 
   return (
     <div>
@@ -131,10 +173,10 @@ const UserNew = () => {
                 <Input onChange={handleJobTitleChange}  />
             </Form.Item>
             <Form.Item name={['Department']} label="Department" rules={[{required: true}]}>
-                <Select onChange={handleDepartmentChange} options={roleOptionsParsed} style={{width: 250}}/>
+                <Select onChange={handleDepartmentChange} options={departmentOptionsParsed} style={{width: 250}}/>
             </Form.Item>
             <Form.Item name={['Manager']} label="Manager" rules={[{required: false}]}>
-                <Select onChange={handleManagerIdChange} options={roleOptionsParsed} style={{width: 250}}/>
+                <Select onChange={handleManagerIdChange} options={managerOptionsParsed} style={{width: 250}}/>
             </Form.Item>
             <Form.Item name={['PasswordHash']} label="Password" rules={[{required: true}]}>
                 <Input onChange={handlePasswordChange}  />
@@ -168,7 +210,7 @@ const CreateNewUser = async (firstName, lastName, address, phoneNumber, email, r
   })
 
  try {
-    let response = await fetch(`http://localhost:3000/api/users`, {
+    let response = await fetch(`${apiUrl}/api/users`, {
     method: "POST",
     body: bodyContent,
     headers: headersList
