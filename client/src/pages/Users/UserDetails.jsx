@@ -80,7 +80,7 @@ const UserDetails = () => {
                     <Flex gap="middle" className="title-line" justify="end">
                 <div>
                 <Tooltip placement='bottom' title={`Edit ${userData.FullName} info`}>
-                    <Button color="default" variant="solid" className="ticket-edit-btn" href={`/user/edit/${userData.UserID}`} style={{marginRight: 10}}><EditOutlined/>Edit</Button>
+                    <Button color="default" variant="outlined" className="ticket-edit-btn" href={`/user/edit/${userData.UserID}`} style={{marginRight: 10}}><EditOutlined/>Edit</Button>
                 </Tooltip>
                 {/* <ConfirmTicketDeleteModal ticketID={data.TicketID} comments={commentData}/> */}
                 </div>
