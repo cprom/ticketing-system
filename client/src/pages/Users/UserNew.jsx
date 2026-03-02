@@ -13,6 +13,13 @@ const UserNew = () => {
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('');
     const [passwordHash, setPasswordHash] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [jobTitle, setJobTitle] = useState('');
+    const [departmentId, setDepartmentId] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [address, setAddress] = useState('');
+    const [managerId, setManagerId] = useState('');
     const [componentSize, setComponentSize] = useState('default');
     const [emailExist, setEmailExist] = useState(false);
 
@@ -20,9 +27,9 @@ const UserNew = () => {
     setComponentSize(size);
     };
 
-    const handleUserNameChange = (e) => {
-    setUserName(e.target.value);
-    }
+    // const handleUserNameChange = (e) => {
+    // setUserName(e.target.value);
+    // }
 
     const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -36,10 +43,39 @@ const UserNew = () => {
     setPasswordHash(e.target.value);
     }
 
+    const handleFirstNameChange = (e) => {
+    setFirstName(e.target.value);
+    }
+    
+    const handleLastNameChange = (e) => {
+    setLastName(e.target.value);
+    }
+
+    const handleJobTitleChange = (e) => {
+    setJobTitle(e.target.value);
+    }
+
+    const handleDepartmentChange = (value) => {
+    setDepartmentId(value);
+    }
+
+    const handlePhoneNumberChange = (e) => {
+    setPhoneNumber(e.target.value);
+    }
+
+    const handleAddressChange = (e) => {
+    setAddress(e.target.value);
+    }
+
+    const handleManagerIdChange = (value) => {
+    setManagerId(value);
+    }
+
+
     const handleCreateBtnClick = async () => {
     try {
-        const result = await CreateNewUser(userName, email, passwordHash, role, setEmailExist);
-        navigate(`/user/${result.userId}`)
+        const result = await CreateNewUser(firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash, setEmailExist);
+        navigate(`/user/${result}`)
     }
     catch (err){
         console.log(err);
@@ -77,8 +113,20 @@ const UserNew = () => {
             onFinish={handleCreateBtnClick}
         
         >
-            <Form.Item name={['FullName']} label="Full Name" rules={[{required: true}]}>
+            {/* <Form.Item name={['FullName']} label="Full Name" rules={[{required: true}]}>
                 <Input onChange={handleUserNameChange}  />
+            </Form.Item> */}
+            <Form.Item name={['FirstName']} label="First Name" rules={[{required: true}]}>
+                <Input onChange={handleFirstNameChange}  />
+            </Form.Item>
+            <Form.Item name={['LastName']} label="Last Name" rules={[{required: true}]}>
+                <Input onChange={handleLastNameChange}  />
+            </Form.Item>
+            <Form.Item name={['Address']} label="Address" rules={[{required: false}]}>
+                <Input onChange={handleAddressChange}  />
+            </Form.Item>
+            <Form.Item name={['Phone']} label="Phone" rules={[{required: false}]}>
+                <Input onChange={handlePhoneNumberChange}  />
             </Form.Item>
             <Form.Item label="Email">
                 <Input type="email" onChange={handleEmailChange}/>
@@ -86,6 +134,15 @@ const UserNew = () => {
             </Form.Item>
             <Form.Item name={['Role']} label="Role" rules={[{required: true}]}>
                 <Select onChange={handleRoleChange} options={roleOptionsParsed} style={{width: 250}}/>
+            </Form.Item>
+            <Form.Item name={['JobTitle']} label="Job Title" rules={[{required: false}]}>
+                <Input onChange={handleJobTitleChange}  />
+            </Form.Item>
+            <Form.Item name={['Department']} label="Department" rules={[{required: false}]}>
+                <Select onChange={handleDepartmentChange} options={roleOptionsParsed} style={{width: 250}}/>
+            </Form.Item>
+            <Form.Item name={['Manager']} label="Manager" rules={[{required: false}]}>
+                <Select onChange={handleManagerIdChange} options={roleOptionsParsed} style={{width: 250}}/>
             </Form.Item>
             <Form.Item name={['PasswordHash']} label="Password" rules={[{required: true}]}>
                 <Input onChange={handlePasswordChange}  />
@@ -100,15 +157,21 @@ const UserNew = () => {
   )
 }
 
-const CreateNewUser = async (userName, email, passwordHash, role, setEmailExist) => {
+const CreateNewUser = async (firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash,  setEmailExist) => {
   let headersList = {
  "Content-Type": "application/json"
 }
   let bodyContent = JSON.stringify({
-    name: userName,
+    firstName: firstName,
+    lastName: lastName,
+    address: address,
+    phoneNumber: phoneNumber,
     email: email,
+    roleId: role,
+    jobTitle: jobTitle,
+    departmentId: departmentId,
+    managerId: managerId,
     passwordHash: passwordHash,
-    roleId: role
   })
 
  try {
