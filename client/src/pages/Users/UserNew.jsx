@@ -9,7 +9,6 @@ import UserContext from '../../Context/UserContext';
 
 const UserNew = () => {
     const navigate = useNavigate();  
-    const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('');
     const [passwordHash, setPasswordHash] = useState('');
@@ -26,10 +25,6 @@ const UserNew = () => {
     const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
     };
-
-    const handleUserNameChange = (e) => {
-    setUserName(e.target.value);
-    }
 
     const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -74,7 +69,7 @@ const UserNew = () => {
 
     const handleCreateBtnClick = async () => {
     try {
-        const result = await CreateNewUser(userName, firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash, setEmailExist);
+        const result = await CreateNewUser(firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash, setEmailExist);
         navigate(`/user/${result.userId}`)
     }
     catch (err){
@@ -113,9 +108,6 @@ const UserNew = () => {
             onFinish={handleCreateBtnClick}
         
         >
-            <Form.Item name={['FullName']} label="Full Name" rules={[{required: true}]}>
-                <Input onChange={handleUserNameChange}  />
-            </Form.Item>
             <Form.Item name={['FirstName']} label="First Name" rules={[{required: true}]}>
                 <Input onChange={handleFirstNameChange}  />
             </Form.Item>
@@ -157,12 +149,12 @@ const UserNew = () => {
   )
 }
 
-const CreateNewUser = async (userName, firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash,  setEmailExist) => {
+const CreateNewUser = async (firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash,  setEmailExist) => {
   let headersList = {
  "Content-Type": "application/json"
 }
   let bodyContent = JSON.stringify({
-    name: userName,
+    name: `${firstName} ${lastName}`,
     firstName: firstName,
     lastName: lastName,
     address: address,
