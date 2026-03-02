@@ -7,7 +7,7 @@ router.get('/', async (_, res) => {
   try {
     await poolConnect;
     const result = await pool.request().query(
-      'SELECT UserID, FullName, Email, RoleID FROM Users'
+      'SELECT UserID, FirstName, LastName, Email, RoleID, JobTitle, DepartmentID, PhoneNumber, Address, ProfileImg, ManagerID FROM Users'
     );
     res.json(result.recordset);
     console.log(result)
@@ -25,9 +25,16 @@ router.get('/:id', async (req, res) => {
         .query(`
             SELECT
                 t.UserID,
-                t.FullName,
+                t.FirstName,
+                t.LastName,
                 t.Email,
-                t.RoleID
+                t.RoleID,
+                t.JobTitle,
+                t.DepartmentID,
+                t.PhoneNumber,
+                t.Address,
+                t.ProfileImg,
+                t.ManagerID
             FROM dbo.Users t
             WHERE t.UserID = @UserID;
                 `);
@@ -43,19 +50,25 @@ router.get('/:id', async (req, res) => {
 // POST /api/users
 router.post('/', async (req, res) => {
   
-  const { name, email, passwordHash, roleId } = req.body || {};
+  const { firstName, lastName, address, phoneNumber, email, roleId, jobTitle, departmentId,  managerId,  passwordHash } = req.body || {};
   try {
     await poolConnect;
     const result = await pool.request()
-    .input('FullName', sql.VarChar, name)
+    .input('FirstName', sql.VarChar(30), firstName)
+    .input('LastName', sql.VarChar(30), lastName)
+    .input('Address', sql.VarChar(500), address)
+    .input('PhoneNumber', sql.VarChar(20), phoneNumber)
     .input('Email', sql.VarChar(255), email)
-    .input('PasswordHash', sql.Text, passwordHash)
     .input('RoleID', sql.Int, roleId)
+    .input('JobTitle', sql.VarChar(50), jobTitle)
+    .input('DepartmentID', sql.Int, departmentId)
+    .input('ManagerID', sql.Int, managerId)
+    .input('PasswordHash', sql.Text, passwordHash)
     .query(`
       INSERT INTO Users
-      (FullName, Email, PasswordHash, RoleID)
+      ( FirstName, LastName, Address, PhoneNumber, Email, RoleID, JobTitle, DepartmentID, ManagerID, PasswordHash )
       VALUES
-      (@FullName, @Email, @PasswordHash, @RoleID);
+      (@FirstName, @LastName, @Address, @PhoneNumber, @Email, @RoleID, @JobTitle, @DepartmentID, @ManagerID, @PasswordHash );
       SELECT SCOPE_IDENTITY() AS UserID;
       `);
       res.status(201).json({userId: result.recordset[0].UserID});
