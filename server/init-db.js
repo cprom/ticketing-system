@@ -48,11 +48,29 @@ async function init() {
       CREATE TABLE Users (
         UserID INT IDENTITY PRIMARY KEY,
         FullName VARCHAR(100) NOT NULL,
+        FirstName VARCHAR(100) NOT NULL,
+        LastName VARCHAR(100) NOT NULL,
         Email VARCHAR(150) NOT NULL UNIQUE,
         PasswordHash VARCHAR(255) NOT NULL,
         RoleID INT NOT NULL,
+        JobTitle VARCHAR(100),
+        DepartmentID INT,
+        PhoneNumber VARCHAR(20),
+        Address VARCHAR(500),
+        ProfileImg VARCHAR(200),
+        ManagerID INT,
         CreatedAt DATETIME DEFAULT GETDATE(),
-        FOREIGN KEY (RoleID) REFERENCES Roles(RoleID)
+        FOREIGN KEY (RoleID) REFERENCES Roles(RoleID),
+        FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID),
+        FOREIGN KEY (ManagerID) REFERENCES Users(UserID)
+      );
+
+      IF OBJECT_ID('Department') IS NULL
+      CREATE TABLE Department (
+        DepartmentID INT IDENTITY PRIMARY KEY,
+        DepartmentName VARCHAR(100) NOT NULL UNIQUE,
+        ManagerID INT,
+        FOREIGN KEY (ManagerID) REFERENCES Users(UserID)
       );
 
       IF OBJECT_ID('TicketStatus') IS NULL
@@ -122,6 +140,10 @@ async function init() {
       IF NOT EXISTS (SELECT 1 FROM Roles)
         INSERT INTO Roles (RoleName) VALUES ('Admin'), ('Agent'), ('User');
 
+      IF NOT EXISTS (SELECT 1 FROM Department)
+        INSERT INTO Department (DepartmentName) 
+        VALUES ('Finance'), ('Marketing'), ('Human Resources'), ('IT'), ('Sales'), ('Executive'), ('Administration'), ('Engineering');
+
       IF NOT EXISTS (SELECT 1 FROM TicketStatus)
         INSERT INTO TicketStatus (StatusName)
         VALUES ('Open'), ('In Progress'), ('Resolved'), ('Closed');
@@ -135,13 +157,13 @@ async function init() {
         VALUES ('Hardware'), ('Software'), ('Network'), ('Access'), ('Other');
 
       IF NOT EXISTS (SELECT 1 FROM Users)
-        INSERT INTO Users (FullName, Email, PasswordHash, RoleID)
+        INSERT INTO Users (FullName, FirstName, LastName, Email, PasswordHash, RoleID, JobTitle, DepartmentID, PhoneNumber, Address, ProfileImg, ManagerID)
         VALUES
-        ('System Admin', 'admin@tickets.local', 'hashed_password', 1),
-        ('Support Agent', 'agent@tickets.local', 'hashed_password', 2),
-        ('End User', 'user@tickets.local', 'hashed_password', 3),
-        ('Kaylie Prom', 'kprom@tickets.local', 'hashed_password', 3),
-        ('Bella Prom', 'bprom@tickets.local', 'hashed_password', 2);
+        ('System Admin', 'System', 'Admin', 'admin@tickets.local', 'hashed_password', 1, 'Sys Admin', 1, '555-555-5555', '123 Test Street City CA 90805','image/url/1', 5),
+        ('Support Agent', 'agent@tickets.local', 'hashed_password', 2, 'Account Manager', '555-555-5555', 2, '123 Test Street City CA 90805','image/url/1', 5),
+        ('End User', 'user@tickets.local', 'hashed_password', 3, 'Accountant', 1, '222-222-2222', '124 Test1 Street City CA 90805','image/url/2', 4),
+        ('Kaylie Prom', 'kprom@tickets.local', 'hashed_password', 3, 'Vice President', 6, '111-111-1111', '125 Test2 Street City CA 90805','image/url/3', 6),
+        ('Bella Prom', 'bprom@tickets.local', 'hashed_password', 2, 'CEO', '333-333-3333', 6, '127 Test3 Street City CA 90805','image/url/4', 9);
 
       IF NOT EXISTS (SELECT 1 FROM Tickets)
           INSERT INTO Tickets (Title, Description, CreatedBy, StatusID, PriorityID, CategoryID)

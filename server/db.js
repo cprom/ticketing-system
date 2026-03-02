@@ -1,6 +1,6 @@
 import sql from 'mssql';
 
-
+console.log(process.env.DB_USER)
 const config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
