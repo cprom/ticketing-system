@@ -203,5 +203,133 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// Delete User (Hard)
+//! Need to make constraints admin only
+router.delete('/:id', async (req, res) => {
+  const userId = parseInt(req.params.id, 10);
+
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: 'Invalid user id' });
+  }
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('UserID', sql.Int, userId)
+      .query(`
+        -- Ensure user exists
+        IF NOT EXISTS (SELECT 1 FROM dbo.Users WHERE UserID = @UserID)
+        BEGIN
+          THROW 50001, 'User not found', 1;
+        END
+
+        -- Prevent delete if tickets exist
+        IF EXISTS (SELECT 1 FROM dbo.Tickets WHERE CreatedBy = @UserID)
+        BEGIN
+          THROW 50002, 'Cannot delete user with existing tickets', 1;
+        END
+
+        -- Remove user comments
+        DELETE FROM dbo.TicketComments
+        WHERE UserID = @UserID;
+
+        -- Delete the user
+        DELETE FROM dbo.Users
+        WHERE UserID = @UserID;
+
+        SELECT @@ROWCOUNT AS AffectedRows;
+      `);
+
+    if (result.recordset[0].AffectedRows === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ success: true, userId });
+
+  } catch (err) {
+    if (err.message.includes('User not found')) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (err.message.includes('existing tickets')) {
+      return res.status(400).json({
+        message: 'User cannot be deleted because tickets are associated with them'
+      });
+    }
+
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete User (Soft)
+router.delete('/soft/:id', async (req, res) => {
+  const userId = parseInt(req.params.id, 10);
+  const deletedBy = req.body?.deletedBy || null; // optional admin id
+
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: 'Invalid user id' });
+  }
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('UserID', sql.Int, userId)
+      .input('DeletedBy', sql.Int, deletedBy)
+      .query(`
+        -- Ensure user exists
+        IF NOT EXISTS (SELECT 1 FROM dbo.Users WHERE UserID = @UserID)
+        BEGIN
+          THROW 50001, 'User not found', 1;
+        END
+
+        -- Prevent double delete
+        IF EXISTS (
+          SELECT 1 FROM dbo.Users 
+          WHERE UserID = @UserID AND IsActive = 0
+        )
+        BEGIN
+          THROW 50002, 'User already deleted', 1;
+        END
+
+        -- Soft delete
+        UPDATE dbo.Users
+        SET 
+          IsActive = 0,
+          DeletedAt = GETDATE(),
+          DeletedBy = @DeletedBy
+        WHERE UserID = @UserID;
+
+        SELECT 
+          UserID,
+          FirstName,
+          LastName,
+          Email,
+          IsActive,
+          DeletedAt,
+          DeletedBy
+        FROM dbo.Users
+        WHERE UserID = @UserID;
+      `);
+
+    res.json({
+      success: true,
+      user: result.recordset[0]
+    });
+
+  } catch (err) {
+    if (err.message.includes('User not found')) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (err.message.includes('already deleted')) {
+      return res.status(400).json({ message: 'User already deleted' });
+    }
+
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 export default router;
