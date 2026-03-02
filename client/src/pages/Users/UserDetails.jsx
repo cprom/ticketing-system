@@ -19,6 +19,7 @@ import { EditOutlined,
 import avatar from '../../assets/img/avatar.jpg'
 
 import { useParams } from 'react-router';
+import ConfirmDeleteUserModal from '../../components/Modal/ConfirmDeleteUserModal';
 const { Meta } = Card;
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
@@ -82,7 +83,7 @@ const UserDetails = () => {
                 <Tooltip placement='bottom' title={`Edit ${userData.FullName} info`}>
                     <Button color="default" variant="outlined" className="ticket-edit-btn" href={`/user/edit/${userData.UserID}`} style={{marginRight: 10}}><EditOutlined/>Edit</Button>
                 </Tooltip>
-                {/* <ConfirmTicketDeleteModal ticketID={data.TicketID} comments={commentData}/> */}
+                <ConfirmDeleteUserModal userData={{userData}} />
                 </div>
             </Flex>
 
