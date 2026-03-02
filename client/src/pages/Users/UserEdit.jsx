@@ -16,7 +16,6 @@ const UserEdit = () => {
     const { id } = useParams();  
     const [email, setEmail] = useState();
     const [role, setRole] = useState();
-    const [passwordHash, setPasswordHash] = useState();
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
     const [jobTitle, setJobTitle] = useState();
@@ -25,8 +24,7 @@ const UserEdit = () => {
     const [address, setAddress] = useState();
     const [managerId, setManagerId] = useState();
     const [componentSize, setComponentSize] = useState('default');
-    const [emailExist, setEmailExist] = useState(false);
-
+  
     const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
     };
@@ -37,10 +35,6 @@ const UserEdit = () => {
 
     const handleRoleChange = (value) => {
     setRole(value)
-    }
-
-    const handlePasswordChange = (e) => {
-    setPasswordHash(e.target.value);
     }
 
     const handleFirstNameChange = (e) => {
@@ -74,7 +68,7 @@ const UserEdit = () => {
 
     const handleUpdateBtnClick = async () => {
     try {
-       updateUser(firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash, setEmailExist, id);
+       updateUser(firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId, id);
         navigate(`/user/${id}`)
     }
     catch (err){
@@ -150,13 +144,13 @@ const UserEdit = () => {
         FirstName: userEditData.FirstName,
         LastName: userEditData.LastName,
         Email: userEditData.Email,
-        RoleID: userEditData.RoleID,
+        RoleID: userEditData.RoleName,
         JobTitle: userEditData.JobTitle,
         DepartmentID: userEditData.DepartmentID,
         Phone: userEditData.PhoneNumber,
         Address: userEditData.Address,
         ProfileImg: userEditData.ProfileImg,
-        ManagerID: userEditData.ManagerID
+        ManagerID: userEditData.ManagerName
       });
     }
   }, [userEditData, form]);
@@ -201,24 +195,21 @@ const UserEdit = () => {
             <Form.Item name={['Email']}  label="Email" rules={[{required: false}]}>
                 <Input type="email" onChange={handleEmailChange}/>
             </Form.Item>
-            <Form.Item name={['Role']} label="Role" rules={[{required: true}]}>
+            <Form.Item name={['RoleID']} label="Role" rules={[{required: true}]}>
                 <Select onChange={handleRoleChange} options={roleOptionsParsed} style={{width: 250}}/>
             </Form.Item>
             <Form.Item name={['JobTitle']} label="Job Title" rules={[{required: false}]}>
                 <Input onChange={handleJobTitleChange}  />
             </Form.Item>
-            <Form.Item name={['Department']} label="Department" rules={[{required: true}]}>
+            <Form.Item name={['DepartmentID']} label="Department" rules={[{required: true}]}>
                 <Select onChange={handleDepartmentChange} options={departmentOptionsParsed} style={{width: 250}}/>
             </Form.Item>
-            <Form.Item name={['Manager']} label="Manager" rules={[{required: false}]}>
+            <Form.Item name={['ManagerID']} label="Manager" rules={[{required: false}]}>
                 <Select onChange={handleManagerIdChange} options={managerOptionsParsed} style={{width: 250}}/>
-            </Form.Item>
-            <Form.Item name={['PasswordHash']} label="Password" rules={[{required: true}]}>
-                <Input onChange={handlePasswordChange}  />
             </Form.Item>
             <Form.Item label={null}>
                 <Button color="default" variant="solid" htmlType='submit'>
-                    Update
+                    Save
                 </Button>
             </Form.Item>
         </Form>

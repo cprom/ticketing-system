@@ -7,7 +7,27 @@ router.get('/', async (_, res) => {
   try {
     await poolConnect;
     const result = await pool.request().query(
-      'SELECT FullName, UserID, FirstName, LastName, Email, RoleID, JobTitle, DepartmentID, PhoneNumber, Address, ProfileImg, ManagerID FROM Users'
+      `SELECT 
+      t.FullName, 
+      t.UserID, 
+      t.FirstName, 
+      t.LastName, 
+      t.Email, 
+      t.RoleID, 
+      t.JobTitle, 
+      t.DepartmentID, 
+      t.PhoneNumber, 
+      t.Address, 
+      t.ProfileImg, 
+      t.ManagerID,
+      r.RoleName,
+      d.DepartmentName,
+      u.FullName as ManagerName
+      FROM Users t
+      JOIN dbo.Roles r ON r.RoleID = t.RoleID
+      JOIN dbo.Department d ON d.DepartmentID = t.DepartmentID
+      LEFT JOIN dbo.Users u ON u.UserID = t.ManagerID 
+      `
     );
     res.json(result.recordset);
     console.log(result)
@@ -35,8 +55,14 @@ router.get('/:id', async (req, res) => {
                 t.PhoneNumber,
                 t.Address,
                 t.ProfileImg,
-                t.ManagerID
+                t.ManagerID,
+                r.RoleName,
+                d.DepartmentName,
+                u.FullName as ManagerName
             FROM dbo.Users t
+            JOIN dbo.Roles r ON r.RoleID = t.RoleID
+            JOIN dbo.Department d ON d.DepartmentID = t.DepartmentID
+            LEFT JOIN dbo.Users u ON u.UserID = t.ManagerID
             WHERE t.UserID = @UserID;
                 `);
     if (!result.recordset.length) {
