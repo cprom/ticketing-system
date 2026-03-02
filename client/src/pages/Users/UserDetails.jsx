@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Avatar, Card, Spin, Image } from 'antd';
+import { Avatar, Card, Spin, Image, Flex, Button } from 'antd';
 import { EditOutlined, EllipsisOutlined, SettingOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import avatar from '../../assets/img/avatar.jpg'
 
@@ -35,6 +35,13 @@ const UserDetails = () => {
             style={{borderRadius: '50%', width: 100, height: 100, border: '1px solid black', margin: 20}}
             src={avatar}
         />
+                    <Flex gap="middle" className="title-line" justify="space-between">
+                <h2>{userData.FullName}</h2>
+                <div>
+                <Button color="default" variant="solid" className="ticket-edit-btn" href={`/user/edit/${userData.UserID}`} style={{marginRight: 10}}>Edit</Button>
+                {/* <ConfirmTicketDeleteModal ticketID={data.TicketID} comments={commentData}/> */}
+                </div>
+            </Flex>
             <Card
                style={{height: 300}} 
             >
@@ -59,8 +66,6 @@ const UserDetails = () => {
                 ""
                 }
             </div>
-
-
         </Card>   
     </div>
     }
