@@ -69,7 +69,7 @@ const UserEdit = () => {
     const handleUpdateBtnClick = async () => {
     try {
        updateUser(firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId, id);
-        navigate(`/user/${id}`)
+       navigate(`/user/${id}`)
     }
     catch (err){
         console.log(err);
@@ -155,8 +155,6 @@ const UserEdit = () => {
     }
   }, [userEditData, form]);
 
-  console.log(userEditData)
-
   let roleOptionsParsed = [];
   data?.map((role) => roleOptionsParsed.push({label: role.RoleName, value: role.RoleID}))
 
@@ -217,7 +215,7 @@ const UserEdit = () => {
   )
 }
 
-const updateUser = async (firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash,  setEmailExist, id) => {
+const updateUser = async (firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId, id) => {
   let headersList = {
  "Content-Type": "application/json"
 }
@@ -232,21 +230,16 @@ const updateUser = async (firstName, lastName, address, phoneNumber, email, role
     jobTitle: jobTitle,
     departmentId: departmentId,
     managerId: managerId,
-    passwordHash: passwordHash,
   })
 
  try {
-    let response = await fetch(`${apiUrl}/api/users${id}`, {
+    let response = await fetch(`${apiUrl}/api/users/${id}`, {
     method: "PUT",
     body: bodyContent,
     headers: headersList
   })
 
 if (!response.ok) {
-    if (response.status === 409 ) {
-      setEmailExist(true);
-      return;
-    }
     const errorText = await response.text();
     throw new Error(errorText || 'Failed to update user');
   }

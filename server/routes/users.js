@@ -114,5 +114,94 @@ router.post('/', async (req, res) => {
     }
 });
 
+// Update User
+router.put('/:id', async (req, res) => {
+  const userId = parseInt(req.params.id, 10);
+ const {name, firstName, lastName, address, phoneNumber, email, roleId, jobTitle, departmentId,  managerId } = req.body || {};
+
+  
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: 'Invalid user id' });
+  }
+
+  // Nothing to update
+  if (
+    name === undefined &&
+    firstName === undefined &&
+    lastName === undefined &&
+    address === undefined &&
+    phoneNumber === undefined &&
+    email === undefined &&
+    roleId === undefined &&
+    jobTitle === undefined &&
+    departmentId === undefined &&
+    managerId === undefined 
+
+  ) {
+    return res.status(400).json({ message: 'No fields to update' });
+  }
+
+  try {
+    await poolConnect;
+
+    const result = await pool.request()
+      .input('UserID', sql.Int, userId)
+      .input('FullName', sql.VarChar(150), name)
+      .input('FirstName', sql.VarChar(50), firstName )
+      .input('LastName', sql.VarChar(50), lastName )
+      .input('Address', sql.VarChar(500), address ?? null)
+      .input('PhoneNumber', sql.VarChar(30), phoneNumber ?? null)
+      .input('Email', sql.VarChar(100), email ?? null)
+      .input('RoleID', sql.Int, roleId ?? null)
+      .input('JobTitle', sql.VarChar(150), jobTitle ?? null)
+      .input('DepartmentID', sql.Int, departmentId ?? null)
+      .input('ManagerID', sql.Int, managerId ?? null)
+      .query(`
+        IF NOT EXISTS (SELECT 1 FROM dbo.Users WHERE UserID = @UserID)
+        BEGIN
+          THROW 50001, 'User not found', 1;
+        END
+
+        UPDATE dbo.Users
+        SET
+          FullName = 
+          COALESCE(@FirstName, FirstName) + ' ' + 
+          COALESCE(@LastName, LastName),
+          FirstName = COALESCE(@FirstName, FirstName),
+          LastName = COALESCE(@LastName, LastName),
+          Address = COALESCE(@Address, Address),
+          PhoneNumber = COALESCE(@PhoneNumber, PhoneNumber),
+          Email = COALESCE(@Email, Email),
+          RoleID = COALESCE(@RoleID, RoleID),
+          JobTitle = COALESCE(@JobTitle, JobTitle),
+          DepartmentID = COALESCE(@DepartmentID, DepartmentID),
+          ManagerID = COALESCE(@ManagerID, ManagerID)
+        WHERE UserID = @UserID;
+
+        SELECT
+          UserID,
+          FullName,
+          FirstName,
+          LastName,
+          Address,
+          PhoneNumber,
+          Email,
+          RoleID,
+          JobTitle,
+          DepartmentID,
+          ManagerID
+        FROM dbo.Users
+        WHERE UserID = @UserID;
+      `);
+
+    res.json(result.recordset[0]);
+  } catch (err) {
+    if (err.message.includes('User not found')) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 export default router;
