@@ -43,18 +43,19 @@ const UsersList = () => {
             title: 'First Name',
             dataIndex: 'FirstName',
             key: 'FirstName',
-            sorter: (a,b) => a.FirstName - b.FirstName,
+            sorter: (a,b) => a.FirstName.localeCompare(b.FirstName),
         },
         {
             title: 'Last Name',
             dataIndex: 'LastName',
             key: 'LastName',
-            sorter: (a,b) => a.LastName - b.LastName,
+            sorter: (a,b) => a.LastName.localeCompare(b.LastName),
         },
         {
             title: 'Email',
             dataIndex: 'Email',
-            key: 'Email'
+            key: 'Email',
+            sorter: (a,b) => a.Email.localeCompare(b.Email)
         },
         {
             title: 'Role',

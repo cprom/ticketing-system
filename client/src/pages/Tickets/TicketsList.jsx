@@ -29,8 +29,6 @@ const TicketsList = () => {
         console.log(`Fetching Error: ${error}`);
     }
 
-
-
     const columns = [
         {
             title: 'Ticket ID',
@@ -43,7 +41,8 @@ const TicketsList = () => {
         {
             title: 'Title',
             dataIndex: 'Title',
-            key: 'Title'
+            key: 'Title',
+            sorter: (a,b) => a.Title.localeCompare(b.Title)
         },
         {
             title: 'Description',
@@ -59,7 +58,7 @@ const TicketsList = () => {
         {
             title: 'Assigned To',
             dataIndex: 'AssignedToName',
-            key: 'AssignedToName'
+            key: 'AssignedToName',
         },
         {
             title: 'Status',
