@@ -36,18 +36,14 @@ const UserDetails = () => {
         queryFn: getUserInfo
     })
 
-    console.log(userData)
-
     if(error){
         console.log(`User Fetching error ${error}`);
     }
-
 
     const openTeamsChat = (email) => {
     const url = `msteams:/l/chat/0/0?users=${email}`;
     window.location.href = url;
     };
-
 
   return (
     <div>

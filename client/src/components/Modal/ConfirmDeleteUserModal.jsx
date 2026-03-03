@@ -8,7 +8,6 @@ import {
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
 const ConfirmDeleteUserModal = ({userData}) => {
-console.log(userData.userData.UserID)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const showModal = () => {
