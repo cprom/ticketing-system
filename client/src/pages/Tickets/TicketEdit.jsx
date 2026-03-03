@@ -92,8 +92,6 @@ const TicketEdit = () => {
     }
   }, [ticketData, form]);
 
-  console.log(ticketData)
-
       // Assign To
     const { data: userData, error: userDataError } = useQuery({
         queryKey: ['userData'],
