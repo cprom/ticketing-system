@@ -7,6 +7,8 @@ import usersRoutes from'./routes/users.js';
 import priorityRoutes from './routes/priorities.js'
 import categoryRoutes from './routes/categories.js'
 import statusRoutes from './routes/statuses.js'
+import roleRoutes from './routes/roles.js'
+import departmentRoutes from './routes/departments.js'
 
 
 
@@ -20,6 +22,8 @@ app.use('/api/users', usersRoutes);
 app.use('/api/priorities', priorityRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/statuses', statusRoutes);
+app.use('/api/roles', roleRoutes);
+app.use('/api/departments', departmentRoutes);
 
 app.get('/', (_, res) => res.send('Ticketing API running'));
 

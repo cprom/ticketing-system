@@ -63,6 +63,12 @@ GET /users/:id
 ### Create users
 POST /users
 
+### Edit user
+PUT /users/:id
+
+### Delete user
+DELETE /users/:id
+
 ---
 ## 🎫 Tickets
 

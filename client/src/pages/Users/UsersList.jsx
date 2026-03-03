@@ -40,15 +40,22 @@ const UsersList = () => {
             render: text => <a href={`/user/${text}`} >{text}</a>
         },
         {
-            title: 'Full Name',
-            dataIndex: 'FullName',
-            key: 'FullName',
-            sorter: (a,b) => a.FullName - b.FullName,
+            title: 'First Name',
+            dataIndex: 'FirstName',
+            key: 'FirstName',
+            sorter: (a,b) => a.FirstName.localeCompare(b.FirstName),
+        },
+        {
+            title: 'Last Name',
+            dataIndex: 'LastName',
+            key: 'LastName',
+            sorter: (a,b) => a.LastName.localeCompare(b.LastName),
         },
         {
             title: 'Email',
             dataIndex: 'Email',
-            key: 'Email'
+            key: 'Email',
+            sorter: (a,b) => a.Email.localeCompare(b.Email)
         },
         {
             title: 'Role',

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Button, Modal, Input, Form, Select } from 'antd';
 import {
@@ -10,21 +10,21 @@ import UserContext from '../../Context/UserContext';
 
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
-const UserNew = () => {
-    const navigate = useNavigate();  
-    const [email, setEmail] = useState('');
-    const [role, setRole] = useState('');
-    const [passwordHash, setPasswordHash] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [jobTitle, setJobTitle] = useState('');
-    const [departmentId, setDepartmentId] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [address, setAddress] = useState('');
-    const [managerId, setManagerId] = useState('');
+const UserEdit = () => {
+    const [form] = Form.useForm();
+    const navigate = useNavigate();
+    const { id } = useParams();  
+    const [email, setEmail] = useState();
+    const [role, setRole] = useState();
+    const [firstName, setFirstName] = useState();
+    const [lastName, setLastName] = useState();
+    const [jobTitle, setJobTitle] = useState();
+    const [departmentId, setDepartmentId] = useState();
+    const [phoneNumber, setPhoneNumber] = useState();
+    const [address, setAddress] = useState();
+    const [managerId, setManagerId] = useState();
     const [componentSize, setComponentSize] = useState('default');
-    const [emailExist, setEmailExist] = useState(false);
-
+  
     const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
     };
@@ -35,10 +35,6 @@ const UserNew = () => {
 
     const handleRoleChange = (value) => {
     setRole(value)
-    }
-
-    const handlePasswordChange = (e) => {
-    setPasswordHash(e.target.value);
     }
 
     const handleFirstNameChange = (e) => {
@@ -70,10 +66,10 @@ const UserNew = () => {
     }
 
 
-    const handleCreateBtnClick = async () => {
+    const handleUpdateBtnClick = async () => {
     try {
-        const result = await CreateNewUser(firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash, setEmailExist);
-        navigate(`/user/${result.userId}`)
+       updateUser(firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId, id);
+       navigate(`/user/${id}`)
     }
     catch (err){
         console.log(err);
@@ -95,17 +91,18 @@ const UserNew = () => {
         console.log(`Roles Fetching Error: ${error}`);
     }
 
-        const getUser = async () => {
+
+            const getUser = async () => {
             const response = await fetch(`${apiUrl}/api/users`);
             const results = await response.json();
             return results
         }
-    
+
         const { data:userData, error:userDataError } = useQuery({
             queryKey: ['users'],
             queryFn: getUser
         });
-    
+
         if(error){
             console.log(`User Fetching Error: ${userDataError}`);
         }
@@ -125,8 +122,38 @@ const UserNew = () => {
             console.log(`User Fetching Error: ${departmentDataError}`);
         }
 
+    const getUserData = async (url) => {
+    const response = await fetch(url);
+    return await response.json();
+    }
 
+    const {data: userEditData, error: userEditDataError} = useQuery({
+        queryKey: ['userEditData', id],
+        queryFn: () => getUserData(`${apiUrl}/api/users/${id}`),
+        enabled: !!id
+    })
 
+    if(userDataError){
+        console.log(`userEditData Fetching Error: ${userEditDataError}`)
+    }
+
+    useEffect(() => {
+    if (userEditData) {
+      form.setFieldsValue({
+        FullName: userEditData.FullName,
+        FirstName: userEditData.FirstName,
+        LastName: userEditData.LastName,
+        Email: userEditData.Email,
+        RoleID: userEditData.RoleName,
+        JobTitle: userEditData.JobTitle,
+        DepartmentID: userEditData.DepartmentID,
+        Phone: userEditData.PhoneNumber,
+        Address: userEditData.Address,
+        ProfileImg: userEditData.ProfileImg,
+        ManagerID: userEditData.ManagerName
+      });
+    }
+  }, [userEditData, form]);
 
   let roleOptionsParsed = [];
   data?.map((role) => roleOptionsParsed.push({label: role.RoleName, value: role.RoleID}))
@@ -139,7 +166,7 @@ const UserNew = () => {
 
   return (
     <div>
-        <h2>Create New User</h2>
+        <h2>Edit User</h2>
          <Form
             labelCol={{ span: 4 }}
             wrapperCol={{ span: 14 }}
@@ -147,7 +174,8 @@ const UserNew = () => {
             initialValues={{ size: componentSize }}
             onValuesChange={onFormLayoutChange}
             size={componentSize}
-            onFinish={handleCreateBtnClick}
+            onFinish={handleUpdateBtnClick}
+            form={form}
         
         >
             <Form.Item name={['FirstName']} label="First Name" rules={[{required: true}]}>
@@ -162,28 +190,24 @@ const UserNew = () => {
             <Form.Item name={['Phone']} label="Phone" rules={[{required: false}]}>
                 <Input onChange={handlePhoneNumberChange}  />
             </Form.Item>
-            <Form.Item label="Email">
+            <Form.Item name={['Email']}  label="Email" rules={[{required: false}]}>
                 <Input type="email" onChange={handleEmailChange}/>
-                <span>{emailExist ? <span style={{color: 'red'}}>Email Aleardy exist.</span> : ''}</span>
             </Form.Item>
-            <Form.Item name={['Role']} label="Role" rules={[{required: true}]}>
+            <Form.Item name={['RoleID']} label="Role" rules={[{required: true}]}>
                 <Select onChange={handleRoleChange} options={roleOptionsParsed} style={{width: 250}}/>
             </Form.Item>
             <Form.Item name={['JobTitle']} label="Job Title" rules={[{required: false}]}>
                 <Input onChange={handleJobTitleChange}  />
             </Form.Item>
-            <Form.Item name={['Department']} label="Department" rules={[{required: true}]}>
+            <Form.Item name={['DepartmentID']} label="Department" rules={[{required: true}]}>
                 <Select onChange={handleDepartmentChange} options={departmentOptionsParsed} style={{width: 250}}/>
             </Form.Item>
-            <Form.Item name={['Manager']} label="Manager" rules={[{required: false}]}>
+            <Form.Item name={['ManagerID']} label="Manager" rules={[{required: false}]}>
                 <Select onChange={handleManagerIdChange} options={managerOptionsParsed} style={{width: 250}}/>
-            </Form.Item>
-            <Form.Item name={['PasswordHash']} label="Password" rules={[{required: true}]}>
-                <Input onChange={handlePasswordChange}  />
             </Form.Item>
             <Form.Item label={null}>
                 <Button color="default" variant="solid" htmlType='submit'>
-                    Create
+                    Save
                 </Button>
             </Form.Item>
         </Form>
@@ -191,7 +215,7 @@ const UserNew = () => {
   )
 }
 
-const CreateNewUser = async (firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash,  setEmailExist) => {
+const updateUser = async (firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId, id) => {
   let headersList = {
  "Content-Type": "application/json"
 }
@@ -206,23 +230,18 @@ const CreateNewUser = async (firstName, lastName, address, phoneNumber, email, r
     jobTitle: jobTitle,
     departmentId: departmentId,
     managerId: managerId,
-    passwordHash: passwordHash,
   })
 
  try {
-    let response = await fetch(`${apiUrl}/api/users`, {
-    method: "POST",
+    let response = await fetch(`${apiUrl}/api/users/${id}`, {
+    method: "PUT",
     body: bodyContent,
     headers: headersList
   })
 
 if (!response.ok) {
-    if (response.status === 409 ) {
-      setEmailExist(true);
-      return;
-    }
     const errorText = await response.text();
-    throw new Error(errorText || 'Failed to create user');
+    throw new Error(errorText || 'Failed to update user');
   }
 
   // success
@@ -233,4 +252,4 @@ if (!response.ok) {
   }
 }
 
-export default UserNew
+export default UserEdit

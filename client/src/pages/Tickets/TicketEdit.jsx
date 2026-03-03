@@ -92,6 +92,8 @@ const TicketEdit = () => {
     }
   }, [ticketData, form]);
 
+  console.log(ticketData)
+
       // Assign To
     const { data: userData, error: userDataError } = useQuery({
         queryKey: ['userData'],
@@ -210,7 +212,7 @@ const updateTicket = async (title, description, currentUserId, assignToId, prior
 
    if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(errorText || 'Failed to create ticket');
+    throw new Error(errorText || 'Failed to update ticket');
   }
 
   // success
