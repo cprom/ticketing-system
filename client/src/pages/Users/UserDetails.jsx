@@ -78,13 +78,13 @@ const UserDetails = () => {
                 </div>
         </Flex>
         </Card>
-                    <Flex gap="middle" className="title-line" justify="end">
-                <div>
+            <Flex gap="middle" className="title-line" justify="end">
+               
                 <Tooltip placement='bottom' title={`Edit ${userData.FullName} info`}>
-                    <Button color="default" variant="outlined" className="ticket-edit-btn" href={`/user/edit/${userData.UserID}`} style={{marginRight: 10}}><EditOutlined/>Edit</Button>
+                    <Button color="default" variant="outlined"  href={`/user/edit/${userData.UserID}`} ><EditOutlined/>Edit</Button>
                 </Tooltip>
                 <ConfirmDeleteUserModal userData={{userData}} />
-                </div>
+             
             </Flex>
 
         <Card style={{minHeight: 300, marginTop: 10}} >
