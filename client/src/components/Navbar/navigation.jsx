@@ -1,5 +1,13 @@
 // src/navigation.js
-import { BugOutlined, HomeOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
+import { BugOutlined, HomeOutlined, LogoutOutlined, PieChartOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
+
+   async function handleLogOut() {
+    await fetch("http://localhost:3000/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+    });
+    window.location.reload();
+  }
 
 export const navItems = [
   {
@@ -26,5 +34,16 @@ export const navItems = [
     label: 'Users',
     path: '/users',
   }
+
   // Add more items as needed
+];
+
+
+export const navItems2 = [
+   {
+    key: '5',
+    icon: <LogoutOutlined/>,
+    label: 'Log Out',
+    onClick: handleLogOut
+  }
 ];
