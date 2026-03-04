@@ -1,48 +1,131 @@
-import { BrowserRouter, Routes, Route } from "react-router"
-import Dashboard from "./pages/Dashboard/Dashboard"
-import LayoutComponent from "./components/Navbar/LayoutComponent"
-import Tickets from "./pages/Tickets/Tickets"
-import Profile from "./pages/Profile/Profile"
-import TicketDetails from "./pages/Tickets/TicketDetails"
-import UserContext from "./Context/UserContext"
-import TicketNew from "./pages/Tickets/TicketNew"
-import TicketEdit from "./pages/Tickets/TicketEdit"
-import Users from "./pages/Users/Users"
-import UserDetails from "./pages/Users/UserDetails"
-import UserNew from "./pages/Users/UserNew"
-import UserEdit from "./pages/Users/UserEdit"
+// import { BrowserRouter, Routes, Route } from "react-router"
+// import Dashboard from "./pages/Dashboard/Dashboard"
+// import LayoutComponent from "./components/Navbar/LayoutComponent"
+// import Tickets from "./pages/Tickets/Tickets"
+// import Profile from "./pages/Profile/Profile"
+// import TicketDetails from "./pages/Tickets/TicketDetails"
+// import UserContext from "./Context/UserContext"
+// import TicketNew from "./pages/Tickets/TicketNew"
+// import TicketEdit from "./pages/Tickets/TicketEdit"
+// import Users from "./pages/Users/Users"
+// import UserDetails from "./pages/Users/UserDetails"
+// import UserNew from "./pages/Users/UserNew"
+// import UserEdit from "./pages/Users/UserEdit"
 
-function App() {
+// function App() {
 
-  const user = 
-  {
-    UserID: 4,
-    FullName: "Sys Admin",
-    Email: 'admin@email.com'
+//   const user = 
+//   {
+//     UserID: 4,
+//     FullName: "Sys Admin",
+//     Email: 'admin@email.com'
+//   }
+
+//   return (
+//     <>
+//       <BrowserRouter>
+//       <UserContext.Provider value={user}>
+//         <Routes>
+//           <Route path="/" element={<LayoutComponent/>}>
+//             <Route path="/dashboard" element={<Dashboard/>} />
+//             <Route path="/tickets" element={<Tickets/>} />
+//             <Route path="/tickets/:id" element={<TicketDetails/>} />
+//             <Route path="/tickets/new" element={<TicketNew/>} />
+//             <Route path="/tickets/edit/:id" element={<TicketEdit/>} />
+//             <Route path="/profile" element={<Profile/>} />
+//             <Route path="/users" element={<Users/>} />
+//             <Route path="/user/:id" element={<UserDetails/>} />
+//             <Route path="/user/new" element={<UserNew/>} />
+//             <Route path="/user/edit/:id" element={<UserEdit/>} />
+//           </Route>
+//         </Routes>
+//         </UserContext.Provider>
+//       </BrowserRouter>  
+//     </>
+//   )
+// }
+
+// export default App
+
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import LayoutComponent from "./components/Navbar/LayoutComponent";
+import Tickets from "./pages/Tickets/Tickets";
+import Profile from "./pages/Profile/Profile";
+import TicketDetails from "./pages/Tickets/TicketDetails";
+import TicketNew from "./pages/Tickets/TicketNew";
+import TicketEdit from "./pages/Tickets/TicketEdit";
+import Users from "./pages/Users/Users";
+import UserDetails from "./pages/Users/UserDetails";
+import UserNew from "./pages/Users/UserNew";
+import UserEdit from "./pages/Users/UserEdit";
+import Login from "./pages/Login/Login";
+
+import { useSession } from "./hooks/useSession";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+function AppRoutes() {
+  const { data: session, isLoading } = useSession();
+
+  if (isLoading) {
+    return <div>Initializing...</div>;
   }
 
   return (
-    <>
-      <BrowserRouter>
-      <UserContext.Provider value={user}>
-        <Routes>
-          <Route path="/" element={<LayoutComponent/>}>
-            <Route path="/dashboard" element={<Dashboard/>} />
-            <Route path="/tickets" element={<Tickets/>} />
-            <Route path="/tickets/:id" element={<TicketDetails/>} />
-            <Route path="/tickets/new" element={<TicketNew/>} />
-            <Route path="/tickets/edit/:id" element={<TicketEdit/>} />
-            <Route path="/profile" element={<Profile/>} />
-            <Route path="/users" element={<Users/>} />
-            <Route path="/user/:id" element={<UserDetails/>} />
-            <Route path="/user/new" element={<UserNew/>} />
-            <Route path="/user/edit/:id" element={<UserEdit/>} />
-          </Route>
-        </Routes>
-        </UserContext.Provider>
-      </BrowserRouter>  
-    </>
-  )
+    <Routes>
+      {/* Public Route */}
+      <Route
+        path="/login"
+        element={
+          session ? <Navigate to="/dashboard" replace /> : <Login />
+        }
+      />
+
+      {/* Protected Layout Wrapper */}
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <LayoutComponent />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="tickets" element={<Tickets />} />
+        <Route path="tickets/:id" element={<TicketDetails />} />
+        <Route path="tickets/new" element={<TicketNew />} />
+        <Route path="tickets/edit/:id" element={<TicketEdit />} />
+        <Route path="profile" element={<Profile />} />
+
+        {/* Admin-only section ready for RBAC */}
+        <Route path="users" element={<Users />} />
+        <Route path="user/:id" element={<UserDetails />} />
+        <Route path="user/new" element={<UserNew />} />
+        <Route path="user/edit/:id" element={<UserEdit />} />
+      </Route>
+
+      {/* Catch-all */}
+      <Route
+        path="*"
+        element={
+          session ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+    </Routes>
+  );
 }
 
-export default App
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
+}
+
+export default App;
