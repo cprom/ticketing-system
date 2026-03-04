@@ -1,4 +1,4 @@
-import { pool, poolConnect, sql } from "../config/db";
+import { pool, poolConnect, sql } from "../config/db.js";
 
 const authorize = (roles = []) => {
   return async (req, res, next) => {
