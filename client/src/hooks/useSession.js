@@ -1,15 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import { apiFetch } from "../utils/api";
+// src/hooks/useSession.js
+import { useQuery } from '@tanstack/react-query';
+import { apiFetch } from '../utils/api';
 
 export const useSession = () => {
   return useQuery({
-    queryKey: ["session"],
+    queryKey: ['session'],
     queryFn: async () => {
-      const res = await apiFetch("/auth/me");
-
-      if (!res.ok) throw new Error("Not authenticated");
-
-      return res.json();
+      const res = await apiFetch('/auth/me');
+      if (!res.ok) throw new Error('Not authenticated');
+      return res.json(); // <--- Important: return parsed JSON
     },
+    retry: false, // don't retry if 401
+    refetchOnWindowFocus: false,
   });
 };
