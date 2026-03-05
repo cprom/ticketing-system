@@ -188,9 +188,14 @@ const UserNew = () => {
             <Form.Item name={['Phone']} label="Phone" rules={[{required: false}]}>
                 <Input onChange={handlePhoneNumberChange}  />
             </Form.Item>
-            <Form.Item  label="Email" rules={[{required: true}]}>
-                <Input type="email" onChange={handleEmailChange}/>
-                <span>{emailExist ? <span style={{color: 'red'}}>Email Aleardy exist.</span> : ''}</span>
+           <Form.Item
+                name="email"
+                label="Email"
+                rules={[{ required: true, message: "Email is required" }]}
+                validateStatus={emailExist ? "error" : ""}
+                help={emailExist ? "Email already exists." : ""}
+            >
+            <Input type="email" onChange={handleEmailChange} />
             </Form.Item>
             <Form.Item name={['Role']} label="Role" rules={[{required: true}]}>
                 <Select onChange={handleRoleChange} options={roleOptionsParsed} style={{width: 250}}/>
