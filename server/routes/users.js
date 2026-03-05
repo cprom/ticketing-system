@@ -51,7 +51,7 @@ router.put('/register/', async (req, res) => {
 });
 
 // Get users
-router.get('/',authenticate, async (_, res) => {
+router.get('/',authenticate, authorize(["Admin"]), async (_, res) => {
   try {
     await poolConnect;
     const result = await pool.request().query(
