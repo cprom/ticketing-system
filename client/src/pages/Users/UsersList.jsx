@@ -13,7 +13,10 @@ const UsersList = () => {
     const [fetchedData, setFetchData] = useState([]);
 
     const getUser = async () => {
-        const response = await fetch(`${apiUrl}/api/users`);
+        const response = await fetch(`${apiUrl}/api/users`, {
+            method: "GET",
+            credentials: "include"
+        });
         const results = await response.json();
         setFetchData(results);
         return results

@@ -1,24 +1,19 @@
 import { pool, poolConnect, sql } from "../config/db.js";
 
-const authorize = (roles = []) => {
-  return async (req, res, next) => {
-    await poolConnect;
+// middleware/authorize.js
+export const authorize = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
 
-    const result = await pool.request()
-      .input("FirebaseUID", sql.NVarChar, req.user.uid)
-      .query(`
-        SELECT Role FROM dbo.Users
-        WHERE FirebaseUID = @FirebaseUID
-      `);
-
-    const user = result.recordset[0];
-
-    if (!user || !roles.includes(user.Role)) {
+    if (!allowedRoles.includes(req.user.role)) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
     next();
   };
 };
+
 
 export default authorize;
