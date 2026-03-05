@@ -143,7 +143,6 @@ const UserNew = () => {
 
   
 // Create user in Firebase
-
     const handleFirebaseSignUp = async () => {
     setFError(null); // Clear previous errors
 
@@ -152,6 +151,7 @@ const UserNew = () => {
       // Signed up successfully
       const user = userCredential.user;
       console.log("User created:", user);
+      updateFirebaseUidInDb(user.uid, user.email)
       // You can redirect the user or update UI state here
     } catch (error) {
       // Handle Errors
@@ -188,7 +188,7 @@ const UserNew = () => {
             <Form.Item name={['Phone']} label="Phone" rules={[{required: false}]}>
                 <Input onChange={handlePhoneNumberChange}  />
             </Form.Item>
-            <Form.Item label="Email">
+            <Form.Item  label="Email" rules={[{required: true}]}>
                 <Input type="email" onChange={handleEmailChange}/>
                 <span>{emailExist ? <span style={{color: 'red'}}>Email Aleardy exist.</span> : ''}</span>
             </Form.Item>
@@ -258,5 +258,35 @@ if (!response.ok) {
     console.error('Network Error', error);
   }
 }
+
+  const updateFirebaseUidInDb = async (firebaseUID, email) => {
+     let headersList = {
+ "Content-Type": "application/json"
+}
+  let bodyContent = JSON.stringify({
+    uid: firebaseUID,
+    email: email 
+  })
+
+ try {
+    let response = await fetch(`${apiUrl}/api/users/register`, {
+    method: "PUT",
+    body: bodyContent,
+    headers: headersList
+  })
+
+if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || 'Failed to update Firebase UID');
+  }
+
+  // success
+  return await response.json();
+ }
+  catch(error){
+    console.error('Network Error', error);
+  }
+  }
+
 
 export default UserNew
