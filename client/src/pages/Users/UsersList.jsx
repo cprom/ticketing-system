@@ -101,7 +101,7 @@ const UsersList = () => {
         <Button color="default" variant='solid' icon={<PlusOutlined/>} href='/user/new'>New User</Button>
       </div>
         { isPending 
-        ? <div className='spinner-container'><Spin /></div> 
+        ? <div className='spinner-container'><Spin size='large' /></div> 
         : <Table
         columns={columns}
         dataSource={fetchedData}
