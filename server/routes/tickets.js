@@ -1,5 +1,8 @@
 import { sql, pool, poolConnect } from '../config/db.js';
 import express from 'express'
+import authenticate from '../middleware/authenticate.js';
+import authorize from '../middleware/authorize.js';
+
 const router =  express.Router();
 
 
@@ -7,7 +10,7 @@ const router =  express.Router();
 // Tickets
 // -------------------------------------
 // Get all tickets
-router.get('/', async (_, res) => {
+router.get('/', authenticate, authorize([ "Admin", "User", "Agent"]), async (_, res) => {
   try {
     await poolConnect;
     const result = await pool.request().query(`
@@ -27,7 +30,7 @@ router.get('/', async (_, res) => {
 });
 
 // Get Ticket by TicketID
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, authorize([ "Admin", "User", "Agent"]), async (req, res) => {
   try {
     await poolConnect;
     const result = await pool.request()
@@ -64,7 +67,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create ticket
-router.post('/', async (req, res) => {
+router.post('/', authenticate, authorize([ "Admin", "Agent"]), async (req, res) => {
   const { title, description, createdBy, assignedTo, statusId, priorityId, categoryId } = req.body || {};
 
   try {
@@ -93,7 +96,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update ticket
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, authorize([ "Admin", "Agent"]), async (req, res) => {
   const ticketId = parseInt(req.params.id, 10);
   const {
     title,
@@ -175,7 +178,7 @@ router.put('/:id', async (req, res) => {
 // -------------------------------------
 
 // Update status / assignment
-router.put('/:id', async (req, res) => {
+router.put('/:id',authenticate, authorize([ "Admin", "Agent"]), async (req, res) => {
   const { statusId, assignedTo } = req.body || {};
 
   try {
@@ -199,7 +202,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete ticket by id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticate, authorize([ "Admin"]), async (req, res) => {
   const ticketId = parseInt(req.params.id, 10);
 
   if (isNaN(ticketId)) {
@@ -237,7 +240,7 @@ router.delete('/:id', async (req, res) => {
 // ---------------------------------------
 
 // Create a comment for a ticket
-router.post('/:id/comments', async (req, res) => {
+router.post('/:id/comments', authenticate, authorize([ "Admin", "Agent"]), async (req, res) => {
   const ticketId = parseInt(req.params.id, 10);
   const { userId, comment } = req.body || {};
 
@@ -299,7 +302,7 @@ router.post('/:id/comments', async (req, res) => {
 //   "userId": 2,
 //   "comment": "I am looking into this issue now."
 // }
-router.get('/:id/comments', async (req, res) => {
+router.get('/:id/comments', authenticate, authorize([ "Admin", "User", "Agent"]), async (req, res) => {
   const ticketId = parseInt(req.params.id, 10);
 
   if (isNaN(ticketId)) {
@@ -332,7 +335,7 @@ router.get('/:id/comments', async (req, res) => {
 
 // Update comment
 // PUT /api/tickets/comments/:commentId
-router.put('/comments/:commentId', async (req, res) => {
+router.put('/comments/:commentId', authenticate, authorize([ "Admin", "Agent"]), async (req, res) => {
   const commentId = parseInt(req.params.commentId, 10);
   const { comment } = req.body || {};
 
@@ -366,7 +369,7 @@ router.put('/comments/:commentId', async (req, res) => {
 
 // Delete comment
 // DELETE /api/tickets/comments/:commentId
-router.delete('/comments/:commentId', async (req, res) => {
+router.delete('/comments/:commentId', authenticate, authorize([ "Admin"]), async (req, res) => {
   const commentId = parseInt(req.params.commentId, 10);
 
   if (isNaN(commentId)) {

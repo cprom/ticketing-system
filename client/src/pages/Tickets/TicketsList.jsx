@@ -13,7 +13,12 @@ const TicketsList = () => {
     const [show, setShow] = useState(true);
     const [fetchedData, setFetchData] = useState([]);
        const getTickets = async () => {
-        const response = await fetch(`${apiUrl}/api/tickets/`);
+        const response = await fetch(`${apiUrl}/api/tickets/`, 
+            {
+                method: "GET",
+                credentials: "include"
+            }
+        );
         const results = await response.json();
         setFetchData(results)
         return results

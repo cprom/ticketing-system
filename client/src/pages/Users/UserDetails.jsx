@@ -29,8 +29,8 @@ const UserDetails = () => {
     const getUserInfo = async () => {
         const response = await fetch(`${apiUrl}/api/users/${id}`,
             {
-            method: "GET",
-            credentials: "include"
+                method: "GET",
+                credentials: "include"
             }
         );
         return await response.json();

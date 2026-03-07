@@ -21,7 +21,12 @@ const TicketDetails = () => {
     const [show, setShow] = useState(true);
 
     const getTickets = async () => {
-    const response = await fetch(`${apiUrl}/api/tickets/${id}`);
+    const response = await fetch(`${apiUrl}/api/tickets/${id}`,
+        {
+            method: "GET",
+            credentials: "include"
+        }
+    );
     return await response.json();
     }
 
@@ -35,7 +40,12 @@ const TicketDetails = () => {
     }
 
     const getComments = async () => {
-        const response = await fetch(`${apiUrl}/api/tickets/${id}/comments`);
+        const response = await fetch(`${apiUrl}/api/tickets/${id}/comments`,
+            {
+                method: "GET",
+                credentials: "include"
+            }
+        );
         return await response.json();
     }
 
