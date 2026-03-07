@@ -13,7 +13,7 @@ const LogoutButton = () => {
 
   return (
     <div>
-      <Button type="text" onClick={handleLogOut} style={{color: 'red'}}>
+      <Button type="default" onClick={handleLogOut} style={{color: 'red'}}>
         <LogoutOutlined/> Logout
       </Button>
     </div>
