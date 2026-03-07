@@ -24,9 +24,6 @@ const LayoutComponent = () => {
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div className="demo-logo-vertical" />
         <div>
-          <div style={{textAlign: 'center', margin: 20}}>
-            <RocketFilled style={{color: 'red', fontSize: 30, border:'5px solid red', borderRadius: 50, padding: 10}}/>
-          </div>
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '87vh'}}>
         <Menu
           theme="dark"

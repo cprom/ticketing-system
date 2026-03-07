@@ -1,47 +1,87 @@
-import { useState } from "react";
+import { Card, Form, Input, Button, Typography, message } from "antd";
 import { useLogin } from "../../hooks/useLogin";
 import { useNavigate } from "react-router";
+import rocketLogo1 from '../../assets/img/rocketLogo1.png'
+
+const { Title } = Typography;
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
   const login = useLogin();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async (values) => {
     try {
-      await login.mutateAsync({ email, password });
+      await login.mutateAsync(values);
       navigate("/dashboard");
-    } catch {
-      alert("Invalid credentials");
+    } catch (err) {
+      message.error("Invalid credentials");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+    <div style={styles.container}>
+      <Card style={styles.card}>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+    <img
+      src={rocketLogo1}
+      alt="Logo"
+      style={{ width: 300, borderRadius: 5 }}
+    />
+  </div>
 
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
 
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
+        <Form
+          layout="vertical"
+          onFinish={handleSubmit}
+        >
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[
+              { required: true, message: "Please enter your email" },
+              { type: "email", message: "Invalid email format" }
+            ]}
+          >
+            <Input placeholder="Email" />
+          </Form.Item>
 
-      <button type="submit" disabled={login.isPending}>
-        {login.isPending ? "Logging in..." : "Login"}
-      </button>
-    </form>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[
+              { required: true, message: "Please enter your password" }
+            ]}
+          >
+            <Input.Password placeholder="Password" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              loading={login.isPending}
+            >
+              Login
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
+    </div>
   );
+};
+
+const styles = {
+  container: {
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "#f5f5f5"
+  },
+  card: {
+    width: 400
+  }
 };
 
 export default Login;
