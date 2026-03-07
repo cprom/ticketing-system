@@ -48,7 +48,7 @@ const { data: session } = useSession();
 
   return (
     <div>
-        { isPending ? <Spin size='large'/>
+        { isPending ? <div className='spinner-container'><Spin size='large'/></div>
     :
     <div>
         <Card style={{width: 400, border: 'none'}}>
