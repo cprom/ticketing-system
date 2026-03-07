@@ -6,7 +6,9 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 
-import UserContext from '../../Context/UserContext';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../../firebase';
+
 
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
@@ -24,6 +26,7 @@ const UserNew = () => {
     const [managerId, setManagerId] = useState('');
     const [componentSize, setComponentSize] = useState('default');
     const [emailExist, setEmailExist] = useState(false);
+    const [ferror, setFError] = useState(null);
 
     const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
@@ -73,6 +76,7 @@ const UserNew = () => {
     const handleCreateBtnClick = async () => {
     try {
         const result = await CreateNewUser(firstName, lastName, address, phoneNumber, email, role, jobTitle, departmentId,  managerId,  passwordHash, setEmailExist);
+        handleFirebaseSignUp()
         navigate(`/user/${result.userId}`)
     }
     catch (err){
@@ -137,6 +141,28 @@ const UserNew = () => {
   let departmentOptionsParsed = [];
   departmentData?.map((department) => departmentOptionsParsed.push({label: department.DepartmentName, value: department.DepartmentID}))
 
+  
+// Create user in Firebase
+    const handleFirebaseSignUp = async () => {
+    setFError(null); // Clear previous errors
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, passwordHash);
+      // Signed up successfully
+      const user = userCredential.user;
+      console.log("User created:", user);
+      updateFirebaseUidInDb(user.uid, user.email)
+      // You can redirect the user or update UI state here
+    } catch (error) {
+      // Handle Errors
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error("Sign up error:", errorCode, errorMessage);
+      setFError(errorMessage);
+    }
+  };
+
+
   return (
     <div>
         <h2>Create New User</h2>
@@ -162,9 +188,14 @@ const UserNew = () => {
             <Form.Item name={['Phone']} label="Phone" rules={[{required: false}]}>
                 <Input onChange={handlePhoneNumberChange}  />
             </Form.Item>
-            <Form.Item label="Email">
-                <Input type="email" onChange={handleEmailChange}/>
-                <span>{emailExist ? <span style={{color: 'red'}}>Email Aleardy exist.</span> : ''}</span>
+           <Form.Item
+                name="email"
+                label="Email"
+                rules={[{ required: true, message: "Email is required" }]}
+                validateStatus={emailExist ? "error" : ""}
+                help={emailExist ? "Email already exists." : ""}
+            >
+            <Input type="email" onChange={handleEmailChange} />
             </Form.Item>
             <Form.Item name={['Role']} label="Role" rules={[{required: true}]}>
                 <Select onChange={handleRoleChange} options={roleOptionsParsed} style={{width: 250}}/>
@@ -232,5 +263,35 @@ if (!response.ok) {
     console.error('Network Error', error);
   }
 }
+
+  const updateFirebaseUidInDb = async (firebaseUID, email) => {
+     let headersList = {
+ "Content-Type": "application/json"
+}
+  let bodyContent = JSON.stringify({
+    uid: firebaseUID,
+    email: email 
+  })
+
+ try {
+    let response = await fetch(`${apiUrl}/api/users/register`, {
+    method: "PUT",
+    body: bodyContent,
+    headers: headersList
+  })
+
+if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || 'Failed to update Firebase UID');
+  }
+
+  // success
+  return await response.json();
+ }
+  catch(error){
+    console.error('Network Error', error);
+  }
+  }
+
 
 export default UserNew

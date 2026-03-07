@@ -27,7 +27,12 @@ const UserDetails = () => {
     const { id } = useParams();
 
     const getUserInfo = async () => {
-        const response = await fetch(`${apiUrl}/api/users/${id}`);
+        const response = await fetch(`${apiUrl}/api/users/${id}`,
+            {
+                method: "GET",
+                credentials: "include"
+            }
+        );
         return await response.json();
     }
 

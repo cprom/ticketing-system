@@ -1,9 +1,11 @@
-import { pool, poolConnect, sql } from '../db.js';
+import { pool, poolConnect, sql } from '../config/db.js';
 import express from 'express';
 const router = express.Router();
+import authenticate from '../middleware/authenticate.js';
+import authorize from '../middleware/authorize.js';
 
 // Get all roles
-router.get('/', async (_req, res) => {
+router.get('/',authenticate, authorize(["Admin", "User", "Agent"]), async (_req, res) => {
   try {
     await poolConnect;
 

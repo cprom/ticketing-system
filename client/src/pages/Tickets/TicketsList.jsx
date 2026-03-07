@@ -13,7 +13,12 @@ const TicketsList = () => {
     const [show, setShow] = useState(true);
     const [fetchedData, setFetchData] = useState([]);
        const getTickets = async () => {
-        const response = await fetch(`${apiUrl}/api/tickets/`);
+        const response = await fetch(`${apiUrl}/api/tickets/`, 
+            {
+                method: "GET",
+                credentials: "include"
+            }
+        );
         const results = await response.json();
         setFetchData(results)
         return results
@@ -176,7 +181,7 @@ const TicketsList = () => {
             <Button color="default" variant='solid' icon={<PlusOutlined/>} href='/tickets/new'>New Ticket</Button>
         </div>
         { isPending 
-        ? <div className='spinner-container'><Spin /></div> 
+        ? <div className='spinner-container'><Spin size='large'/></div> 
         : <Table
         columns={columns}
         dataSource={fetchedData}

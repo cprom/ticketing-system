@@ -10,7 +10,8 @@ import { useNavigate } from 'react-router';
 const { TextArea } = Input;
 
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from 'react-router'
+import { useParams } from 'react-router';
+import { useSession } from '../../hooks/useSession.js'
 
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
@@ -18,7 +19,6 @@ const TicketEdit = () => {
     const [form] = Form.useForm();
     const { id } = useParams();
     const navigate = useNavigate();
-    const currentUser = useContext(UserContext)
     const [componentSize, setComponentSize] = useState('default');
 
     const [title, setTitle] = useState();
@@ -28,7 +28,9 @@ const TicketEdit = () => {
     const [statusId, setStatusId] = useState();
     const [description, setDescription] = useState();
 
-    const currentUserId = currentUser.UserID;
+    const {data: session} = useSession();
+    
+    const currentUserId = session.userId;
 
     const onFormLayoutChange = ({ size }) => {
         setComponentSize(size);
@@ -65,7 +67,12 @@ const TicketEdit = () => {
     } 
 
     const getData = async (url) => {
-    const response = await fetch(url);
+    const response = await fetch(url,
+        {
+            method: "GET",
+            credentials: "include"
+        }
+    );
     return await response.json();
     }
 

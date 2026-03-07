@@ -61,7 +61,12 @@ const TicketNew = () => {
     }
 
     const getData = async (url) => {
-    const response = await fetch(url);
+    const response = await fetch(url, 
+        {
+            method: "GET",
+            credentials: "include"
+        }
+    );
     return await response.json();
     }
 

@@ -13,7 +13,10 @@ const UsersList = () => {
     const [fetchedData, setFetchData] = useState([]);
 
     const getUser = async () => {
-        const response = await fetch(`${apiUrl}/api/users`);
+        const response = await fetch(`${apiUrl}/api/users`, {
+            method: "GET",
+            credentials: "include"
+        });
         const results = await response.json();
         setFetchData(results);
         return results
@@ -98,7 +101,7 @@ const UsersList = () => {
         <Button color="default" variant='solid' icon={<PlusOutlined/>} href='/user/new'>New User</Button>
       </div>
         { isPending 
-        ? <div className='spinner-container'><Spin /></div> 
+        ? <div className='spinner-container'><Spin size='large' /></div> 
         : <Table
         columns={columns}
         dataSource={fetchedData}

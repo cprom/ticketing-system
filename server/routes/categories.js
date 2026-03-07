@@ -1,10 +1,12 @@
 import express from 'express';
-import { pool, poolConnect } from '../db.js';
+import { pool, poolConnect } from '../config/db.js';
+import authenticate from '../middleware/authenticate.js';
+import authorize from '../middleware/authorize.js'
 
 const router = express.Router();
 
 // Get all categories
-router.get('/', async (_req, res) => {
+router.get('/', authenticate, authorize(["Admin", "User", "Agent"]), async (_req, res) => {
   try {
     await poolConnect;
 
@@ -23,7 +25,7 @@ router.get('/', async (_req, res) => {
 });
 
 // Get category by id
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, authorize(["Admin", "User", "Agent"]), async (req, res) => {
   const categoryId = parseInt(req.params.id, 10);
 
   if (isNaN(categoryId)) {

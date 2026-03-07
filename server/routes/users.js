@@ -1,9 +1,57 @@
-import { pool, poolConnect, sql } from '../db.js';
+import { pool, poolConnect, sql } from '../config/db.js';
 import express from 'express';
+import  authenticate  from '../middleware/authenticate.js';
+import  authorize  from "../middleware/authorize.js";
+
 const router = express.Router();
 
+
+// Register user to firebase
+router.put('/register/',authenticate, authorize(["Admin"]), async (req, res) => {
+  try {
+    const { uid, email } = req.body;
+    // 🔎 Basic validation
+
+    if (!uid || !email) {
+      return res.status(400).json({
+        message: "uid and email are required"
+      });
+    }
+
+    await poolConnect;
+
+    //Parameterized query (NO injection risk)
+    const result = await pool.request()
+      .input("FirebaseUID", sql.NVarChar, uid)
+      .input("Email", sql.VarChar, email)
+      .query(`
+        UPDATE dbo.Users
+        SET FirebaseUID = @FirebaseUID
+        WHERE Email = @Email
+      `);
+
+    // Check if row was updated
+    if (result.rowsAffected[0] === 0) {
+      return res.status(404).json({
+        message: "User not found or already linked"
+      });
+    }
+
+    res.status(200).json({
+      message: "Firebase UID successfully linked to user"
+    });
+
+  } catch (err) {
+    console.error("Register error:", err);
+    res.status(500).json({
+      message: "Internal server error",
+      error: err.message
+    });
+  }
+});
+
 // Get users
-router.get('/', async (_, res) => {
+router.get('/',authenticate, authorize([ "Admin", "User", "Agent"]), async (_, res) => {
   try {
     await poolConnect;
     const result = await pool.request().query(
@@ -37,7 +85,7 @@ router.get('/', async (_, res) => {
 });
 
 // Get user by UserID
-router.get('/:id', async (req, res) => {
+router.get('/:id',authenticate, authorize(["Admin", "User", "Agent"]), async (req, res) => {
     try {
         await poolConnect;
         const result = await pool.request()
@@ -74,8 +122,8 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// POST /api/users
-router.post('/', async (req, res) => {
+// POST Create /api/users
+router.post('/',authenticate, authorize(["Admin", "Agent"]), async (req, res) => {
   
   const {name, firstName, lastName, address, phoneNumber, email, roleId, jobTitle, departmentId,  managerId,  passwordHash } = req.body || {};
   try {
@@ -115,7 +163,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update User
-router.put('/:id', async (req, res) => {
+router.put('/:id',authenticate, authorize(["Admin", "Agent"]), async (req, res) => {
   const userId = parseInt(req.params.id, 10);
  const {name, firstName, lastName, address, phoneNumber, email, roleId, jobTitle, departmentId,  managerId } = req.body || {};
 
@@ -203,9 +251,12 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+
+
+
 // Delete User (Hard)
 //! Need to make constraints admin only
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',authenticate, authorize(["Admin"]), async (req, res) => {
   const userId = parseInt(req.params.id, 10);
 
   if (isNaN(userId)) {
@@ -263,7 +314,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // Delete User (Soft)
-router.delete('/soft/:id', async (req, res) => {
+router.delete('/soft/:id',authenticate, authorize(["Admin"]), async (req, res) => {
   const userId = parseInt(req.params.id, 10);
   const deletedBy = req.body?.deletedBy || null; // optional admin id
 
@@ -330,6 +381,8 @@ router.delete('/soft/:id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+
 
 
 export default router;
