@@ -77,7 +77,10 @@ const UserEdit = () => {
   }
 
       const getRolesOptions = async () => {
-        const response = await fetch(`${apiUrl}/api/roles`);
+        const response = await fetch(`${apiUrl}/api/roles`, {
+            method: "GET",
+            credentials: "include"
+        });
         const results = await response.json();
         return results
     }
@@ -93,7 +96,12 @@ const UserEdit = () => {
 
 
             const getUser = async () => {
-            const response = await fetch(`${apiUrl}/api/users`);
+            const response = await fetch(`${apiUrl}/api/users`,
+                {
+            method: "GET",
+            credentials: "include"
+                }
+            );
             const results = await response.json();
             return results
         }
@@ -108,7 +116,12 @@ const UserEdit = () => {
         }
 
         const getDepartments = async () => {
-            const response = await fetch(`${apiUrl}/api/departments`);
+            const response = await fetch(`${apiUrl}/api/departments`,
+                {
+            method: "GET",
+            credentials: "include"
+                }
+            );
             const results = await response.json();
             return results
         }
@@ -123,7 +136,10 @@ const UserEdit = () => {
         }
 
     const getUserData = async (url) => {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+            method: "GET",
+            credentials: "include"
+    });
     return await response.json();
     }
 
@@ -236,7 +252,8 @@ const updateUser = async (firstName, lastName, address, phoneNumber, email, role
     let response = await fetch(`${apiUrl}/api/users/${id}`, {
     method: "PUT",
     body: bodyContent,
-    headers: headersList
+    headers: headersList,
+    credentials: 'include'
   })
 
 if (!response.ok) {
