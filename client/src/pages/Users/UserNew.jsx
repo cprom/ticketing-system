@@ -85,7 +85,12 @@ const UserNew = () => {
   }
 
       const getRolesOptions = async () => {
-        const response = await fetch(`${apiUrl}/api/roles`);
+        const response = await fetch(`${apiUrl}/api/roles`,
+            {
+                method: "GET",
+                credentials: "include"
+            }
+        );
         const results = await response.json();
         return results
     }
@@ -100,7 +105,12 @@ const UserNew = () => {
     }
 
         const getUser = async () => {
-            const response = await fetch(`${apiUrl}/api/users`);
+            const response = await fetch(`${apiUrl}/api/users`,
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
             const results = await response.json();
             return results
         }
@@ -115,7 +125,12 @@ const UserNew = () => {
         }
 
         const getDepartments = async () => {
-            const response = await fetch(`${apiUrl}/api/departments`);
+            const response = await fetch(`${apiUrl}/api/departments`,
+                {
+                    method: "GET",
+                    credentials: "include"
+                }
+            );
             const results = await response.json();
             return results
         }
