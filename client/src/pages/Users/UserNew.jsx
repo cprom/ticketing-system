@@ -243,6 +243,7 @@ const CreateNewUser = async (firstName, lastName, address, phoneNumber, email, r
  try {
     let response = await fetch(`${apiUrl}/api/users`, {
     method: "POST",
+    credentials: "include",
     body: bodyContent,
     headers: headersList
   })
@@ -276,6 +277,7 @@ if (!response.ok) {
  try {
     let response = await fetch(`${apiUrl}/api/users/register`, {
     method: "PUT",
+    credentials: "include",
     body: bodyContent,
     headers: headersList
   })

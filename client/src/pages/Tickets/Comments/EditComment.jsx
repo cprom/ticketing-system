@@ -58,13 +58,14 @@ const updateComment = async (commentID, comment, currentUser) => {
  "Content-Type": "application/json"
 }
   let bodyContent = JSON.stringify({
-    userId: currentUser.UserID,
+    userId: currentUser.userId,
     comment: comment
   })
 
  try {
     let response = await fetch(`${apiUrl}/api/tickets/comments/${commentID}`, {
     method: "PUT",
+    credentials: "include",
     body: bodyContent,
     headers: headersList
   })

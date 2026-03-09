@@ -64,6 +64,7 @@ const addComment = async (ticketID, comment, currentUser) => {
     let response = await fetch(`http://localhost:3000/api/tickets/${ticketID}/comments`, {
     method: "POST",
     body: bodyContent,
+    credentials: 'include',
     headers: headersList
   })
 

@@ -44,6 +44,7 @@ const deleteUser = async (id) => {
  try {
    const response = await fetch(`${apiUrl}/api/users/${id}`, {
     method: "DELETE",
+    credentials: 'include'
   })
   if(response.ok){
     console.log(`User with ID ${id} deleted successfully`)
