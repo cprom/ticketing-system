@@ -302,7 +302,7 @@ router.post('/:id/comments', authenticate, authorize([ "Admin", "Agent"]), async
 //   "userId": 2,
 //   "comment": "I am looking into this issue now."
 // }
-router.get('/:id/comments', authenticate, authorize([ "Admin", "User", "Agent"]), async (req, res) => {
+router.get('/:id/comments', async (req, res) => {
   const ticketId = parseInt(req.params.id, 10);
 
   if (isNaN(ticketId)) {

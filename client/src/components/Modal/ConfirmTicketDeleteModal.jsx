@@ -19,6 +19,7 @@ const ConfirmTicketDeleteModal = ({ticketID, comments}) => {
         try {
         const response = await fetch(`${apiUrl}/api/tickets/comments/${comment.CommentID}`, {
           method: "DELETE",
+          credentials: "include"
         })
         if(response.ok){
           console.log(`Comment with ID ${comment.CommentID} deleted successfully`)
@@ -66,6 +67,7 @@ const deleteTicket = async (id) => {
  try {
    const response = await fetch(`${apiUrl}/api/tickets/${id}`, {
     method: "DELETE",
+    credentials: "include"
   })
   if(response.ok){
     console.log(`Ticket with ID ${id} deleted successfully`)

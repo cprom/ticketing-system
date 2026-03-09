@@ -20,7 +20,7 @@ const TicketEdit = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [componentSize, setComponentSize] = useState('default');
-
+    const currentUser = useContext(UserContext)
     const [title, setTitle] = useState();
     const [assignToId, setAssignToId] = useState();
     const [priorityId, setPriorityId] = useState();
@@ -30,7 +30,7 @@ const TicketEdit = () => {
 
     const {data: session} = useSession();
     
-    const currentUserId = session.userId;
+    const currentUserId = currentUser.userId;
 
     const onFormLayoutChange = ({ size }) => {
         setComponentSize(size);
@@ -211,6 +211,7 @@ const updateTicket = async (title, description, currentUserId, assignToId, prior
  try {
     let response = await fetch(`${apiUrl}/api/tickets/${id}`, {
     method: "PUT",
+    credentials: "include",
     body: bodyContent,
     headers: headersList
   })

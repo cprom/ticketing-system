@@ -11,8 +11,8 @@ import UserContext from '../../../Context/UserContext';
 const { TextArea } = Input;
 
 const CreateComment = ({ticketID}) => {
-
-  const currentUser = useContext(UserContext)
+  
+  const currentUser = useContext(UserContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [comment, setComment] = useState('');
 
@@ -20,6 +20,7 @@ const CreateComment = ({ticketID}) => {
   const showModal = () => {
     setIsModalOpen(true);
   };
+
   const handleAdd = () => {
     addComment(ticketID, comment, currentUser)
     window.location.reload(false);
@@ -55,7 +56,7 @@ const addComment = async (ticketID, comment, currentUser) => {
  "Content-Type": "application/json"
 }
   let bodyContent = JSON.stringify({
-    userId: currentUser.UserID,
+    userId: currentUser.userId,
     comment: comment
   })
 
@@ -63,6 +64,7 @@ const addComment = async (ticketID, comment, currentUser) => {
     let response = await fetch(`http://localhost:3000/api/tickets/${ticketID}/comments`, {
     method: "POST",
     body: bodyContent,
+    credentials: 'include',
     headers: headersList
   })
 

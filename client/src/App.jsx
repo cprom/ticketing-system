@@ -17,6 +17,7 @@ import UserNew from "./pages/Users/UserNew";
 import UserEdit from "./pages/Users/UserEdit";
 
 import Login from "./pages/Login/Login";
+import UserContext from "./Context/UserContext";
 
 function AppRoutes() {
   const { data: session, isLoading } = useSession();
@@ -26,6 +27,7 @@ function AppRoutes() {
   }
 
   return (
+       <UserContext.Provider value={session}>
     <Routes>
       {/* Public route: login */}
       <Route
@@ -73,6 +75,7 @@ function AppRoutes() {
         element={session ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />}
       />
     </Routes>
+</UserContext.Provider>
   );
 }
 

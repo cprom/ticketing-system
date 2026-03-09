@@ -41,6 +41,7 @@ const deleteComment = async (id) => {
  try {
    const response = await fetch(`${apiUrl}/api/tickets/comments/${id}`, {
     method: "DELETE",
+    credentials: 'include'
   })
   if(response.ok){
     console.log(`Comment with ID ${id} deleted successfully`)
