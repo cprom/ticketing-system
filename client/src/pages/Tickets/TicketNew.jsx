@@ -24,7 +24,7 @@ const TicketNew = () => {
     const [statusId, setStatusId] = useState();
     const [description, setDescription] = useState();
 
-    const currentUserId = currentUser.UserID;
+    const currentUserId = currentUser.userId;
 
     const onFormLayoutChange = ({ size }) => {
         setComponentSize(size);
@@ -181,6 +181,7 @@ const createNewTicket = async (title, description, currentUserId, assignToId, pr
  try {
     let response = await fetch(`${apiUrl}/api/tickets/`, {
     method: "POST",
+    credentials: 'include',
     body: bodyContent,
     headers: headersList
   })
