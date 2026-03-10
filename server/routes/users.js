@@ -51,7 +51,7 @@ router.put('/register/',authenticate, authorize(["Admin"]), async (req, res) => 
 });
 
 // Get users
-router.get('/',authenticate, authorize([ "Admin", "User", "Agent"]), async (_, res) => {
+router.get('/',authenticate, authorize([ "Admin", "User", "Agent","Tech"]), async (_, res) => {
   try {
     await poolConnect;
     const result = await pool.request().query(
@@ -85,7 +85,7 @@ router.get('/',authenticate, authorize([ "Admin", "User", "Agent"]), async (_, r
 });
 
 // Get user by UserID
-router.get('/:id',authenticate, authorize(["Admin", "User", "Agent"]), async (req, res) => {
+router.get('/:id',authenticate, authorize(["Admin", "User", "Agent","Tech"]), async (req, res) => {
     try {
         await poolConnect;
         const result = await pool.request()
@@ -123,7 +123,7 @@ router.get('/:id',authenticate, authorize(["Admin", "User", "Agent"]), async (re
 });
 
 // POST Create /api/users
-router.post('/',authenticate, authorize(["Admin", "Agent"]), async (req, res) => {
+router.post('/',authenticate, authorize(["Admin", "Agent","Tech"]), async (req, res) => {
   
   const {name, firstName, lastName, address, phoneNumber, email, roleId, jobTitle, departmentId,  managerId,  passwordHash } = req.body || {};
   try {
@@ -163,7 +163,7 @@ router.post('/',authenticate, authorize(["Admin", "Agent"]), async (req, res) =>
 });
 
 // Update User
-router.put('/:id',authenticate, authorize(["Admin", "Agent"]), async (req, res) => {
+router.put('/:id',authenticate, authorize(["Admin", "Agent","Tech"]), async (req, res) => {
   const userId = parseInt(req.params.id, 10);
  const {name, firstName, lastName, address, phoneNumber, email, roleId, jobTitle, departmentId,  managerId } = req.body || {};
 

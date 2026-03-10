@@ -20,10 +20,14 @@ import avatar from '../../assets/img/avatar.jpg'
 
 import { useParams } from 'react-router';
 import ConfirmDeleteUserModal from '../../components/Modal/ConfirmDeleteUserModal';
+
+import { useSession } from '../../hooks/useSession';
+
 const { Meta } = Card;
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
 const UserDetails = () => {
+    const { data: session } = useSession();
     const { id } = useParams();
 
     const getUserInfo = async () => {
@@ -81,10 +85,18 @@ const UserDetails = () => {
         </Card>
             <Flex gap="middle" className="title-line" justify="end">
                
-                <Tooltip placement='bottom' title={`Edit ${userData.FullName} info`}>
-                    <Button color="default" variant="outlined"  href={`/user/edit/${userData.UserID}`} ><EditOutlined/>Edit</Button>
-                </Tooltip>
-                <ConfirmDeleteUserModal userData={{userData}} />
+               {
+                 session.role === "Admin" || session.role === "Tech"
+                    ?
+                    <>
+                    <Tooltip placement='bottom' title={`Edit ${userData.FullName} info`}>
+                        <Button color="default" variant="outlined"  href={`/user/edit/${userData.UserID}`} ><EditOutlined/>Edit</Button>
+                    </Tooltip>
+                    <ConfirmDeleteUserModal userData={{userData}} />
+                    </>
+                    :
+                    ""
+               }
              
             </Flex>
 

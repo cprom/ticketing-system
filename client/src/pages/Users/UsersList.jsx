@@ -5,11 +5,11 @@ import { Table, Badge, Space, Switch } from 'antd';
 import {
   PlusOutlined,
 } from '@ant-design/icons';
-
+import { useSession } from '../../hooks/useSession';
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
 const UsersList = () => {
-
+    const { data: session } = useSession();
     const [fetchedData, setFetchData] = useState([]);
 
     const getUser = async () => {
@@ -68,6 +68,7 @@ const UsersList = () => {
               text === 1 ? "Admin"
             : text === 2 ? "Agent"
             : text === 3 ? " User"
+            : text === 1002 ? " Tech"
             : "",
              filters: [
                 {
@@ -81,6 +82,10 @@ const UsersList = () => {
                 {
                     text: 'User',
                     value: '3'
+                },
+                {
+                    text: 'Tech',
+                    value: '1002'
                 }
             ],
             onFilter: (value, record) => record.RoleID === Number(value),
@@ -98,7 +103,13 @@ const UsersList = () => {
   return (
     <div>
       <div className='add-new-ticket-btn'>
-        <Button color="default" variant='solid' icon={<PlusOutlined/>} href='/user/new'>New User</Button>
+        {
+            session.role === "Admin" || session === "Tech" 
+            ?
+            <Button color="default" variant='solid' icon={<PlusOutlined/>} href='/user/new'>New User</Button>
+            :
+            ""
+        }
       </div>
         { isPending 
         ? <div className='spinner-container'><Spin size='large' /></div> 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { Button, Spin, Tooltip } from "antd";
 import { Table, Badge, Space, Switch } from 'antd';
@@ -6,10 +6,12 @@ import {
   PlusOutlined,
 } from '@ant-design/icons';
 
+import UserContext from '../../Context/UserContext';
+
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
 const TicketsList = () => {
-
+    const currentUser = useContext(UserContext);
     const [show, setShow] = useState(true);
     const [fetchedData, setFetchData] = useState([]);
        const getTickets = async () => {
@@ -41,13 +43,15 @@ const TicketsList = () => {
             defaultSortOrder: 'descend',
             key: 'TicketID',
             sorter: (a,b) => a.TicketID - b.TicketID,
-            render: text => <a href={`/tickets/${text}`} >{text}</a>
+            render: text => <a href={`/tickets/${text}`} >{text}</a>,
+            ellipsis: true
         },
         {
             title: 'Title',
             dataIndex: 'Title',
             key: 'Title',
-            sorter: (a,b) => a.Title.localeCompare(b.Title)
+            sorter: (a,b) => a.Title.localeCompare(b.Title),
+            ellipsis: true
         },
         {
             title: 'Description',
@@ -58,12 +62,14 @@ const TicketsList = () => {
         {
             title: 'Created By',
             dataIndex: 'CreatedByName',
-            key: 'CreatedByName'
+            key: 'CreatedByName',
+            ellipsis: true
         },
         {
             title: 'Assigned To',
             dataIndex: 'AssignedToName',
             key: 'AssignedToName',
+            ellipsis: true
         },
         {
             title: 'Status',
@@ -95,6 +101,7 @@ const TicketsList = () => {
                 }
             ],
             onFilter: (value, record) => record.StatusName.indexOf(value) === 0,
+            ellipsis: true
         },
         {
             title: 'Priority',
@@ -126,6 +133,7 @@ const TicketsList = () => {
                 }
             ],
             onFilter: (value, record) => record.PriorityName.indexOf(value) === 0,
+            ellipsis: true
         },
         {
             title: 'Category',
@@ -157,13 +165,15 @@ const TicketsList = () => {
                 }
             ],
             onFilter: (value, record) => record.CategoryName.indexOf(value) === 0,
+            ellipsis: true
         },
         {
              title: 'Created On',
              dataIndex: 'CreatedAt',
              key: 'CreatedAt',
              render: (text) => new Date(text).toLocaleString(),
-             sorter: (a, b) => new Date(a.CreatedAt) - new Date(b.CreatedAt),   
+             sorter: (a, b) => new Date(a.CreatedAt) - new Date(b.CreatedAt),
+             ellipsis: true   
         },
         {
             title: 'Action',
@@ -171,14 +181,21 @@ const TicketsList = () => {
             key: 'operation',
             fixed: 'end',
             width: 100,
-            render: (text) =><a href={`/tickets/${text}`} >View</a>
+            render: (text) =><a href={`/tickets/${text}`} >View</a>,
+            ellipsis: true
         }
     ]
 
   return (
     <div>
         <div className='add-new-ticket-btn'>
-            <Button color="default" variant='solid' icon={<PlusOutlined/>} href='/tickets/new'>New Ticket</Button>
+            {
+                currentUser.role === "Admin" || currentUser === "Tech" 
+                ? 
+                <Button color="default" variant='solid' icon={<PlusOutlined/>} href='/tickets/new'>New Ticket</Button>
+                :
+                ""
+            }
         </div>
         { isPending 
         ? <div className='spinner-container'><Spin size='large'/></div> 

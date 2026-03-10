@@ -11,7 +11,7 @@ import UserContext from '../../../Context/UserContext';
 const { TextArea } = Input;
 
 const CreateComment = ({ticketID}) => {
-  
+  const apiUrl = import.meta.env.VITE_BASE_API_URL;
   const currentUser = useContext(UserContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [comment, setComment] = useState('');
@@ -22,7 +22,7 @@ const CreateComment = ({ticketID}) => {
   };
 
   const handleAdd = () => {
-    addComment(ticketID, comment, currentUser)
+    addComment(apiUrl, ticketID, comment, currentUser)
     window.location.reload(false);
     setIsModalOpen(false);
   };
@@ -51,7 +51,7 @@ const CreateComment = ({ticketID}) => {
   )
 }
 
-const addComment = async (ticketID, comment, currentUser) => {
+const addComment = async (apiUrl, ticketID, comment, currentUser) => {
   let headersList = {
  "Content-Type": "application/json"
 }
@@ -61,7 +61,7 @@ const addComment = async (ticketID, comment, currentUser) => {
   })
 
  try {
-    let response = await fetch(`http://localhost:3000/api/tickets/${ticketID}/comments`, {
+    let response = await fetch(`${apiUrl}/api/tickets/${ticketID}/comments`, {
     method: "POST",
     body: bodyContent,
     credentials: 'include',

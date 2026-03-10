@@ -12,11 +12,13 @@ import ConfirmDeleteModal from "../../components/Modal/ConfirmDeleteModal";
 import CreateComment from "./Comments/CreateComment";
 import ConfirmTicketDeleteModal from "../../components/Modal/ConfirmTicketDeleteModal";
 import EditComment from "./Comments/EditComment";
+import { useSession } from '../../hooks/useSession.js'
 
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
 const TicketDetails = () => {
 
+    const {data: session} = useSession();
     const { id } = useParams();
     const [show, setShow] = useState(true);
 
@@ -94,10 +96,16 @@ const TicketDetails = () => {
 
             <Flex gap="middle" className="title-line" justify="space-between">
                 <h2>{data.Title}</h2>
-                <div>
-                <Button color="default" variant="solid" className="ticket-edit-btn" href={`/tickets/edit/${data.TicketID}`} style={{marginRight: 10}}>Edit</Button>
-                <ConfirmTicketDeleteModal ticketID={data.TicketID} comments={commentData}/>
-                </div>
+                {
+                    session.role === "Admin" || session.role === "Tech"
+                    ?
+                    <div>
+                    <Button color="default" variant="solid" className="ticket-edit-btn" href={`/tickets/edit/${data.TicketID}`} style={{marginRight: 10}}>Edit</Button>
+                    <ConfirmTicketDeleteModal ticketID={data.TicketID} comments={commentData}/>
+                    </div>
+                    :
+                    ""
+                }
             </Flex>
             
             <Card >

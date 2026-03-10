@@ -11,7 +11,6 @@ const { TextArea } = Input;
 
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from 'react-router';
-import { useSession } from '../../hooks/useSession.js'
 
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
@@ -27,8 +26,6 @@ const TicketEdit = () => {
     const [categoryId, setCategoryId] = useState();
     const [statusId, setStatusId] = useState();
     const [description, setDescription] = useState();
-
-    const {data: session} = useSession();
     
     const currentUserId = currentUser.userId;
 
@@ -217,6 +214,9 @@ const updateTicket = async (title, description, currentUserId, assignToId, prior
   })
 
    if (!response.ok) {
+    if(response.status === 403){
+    alert("Not Authorized")
+    }
     const errorText = await response.text();
     throw new Error(errorText || 'Failed to update ticket');
   }

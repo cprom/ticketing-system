@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { Button, Modal, Input, Form, Select } from 'antd';
+import { Button, Modal, Input, Form, Select, Alert } from 'antd';
 import {
   PlusOutlined,
 } from '@ant-design/icons';
@@ -165,7 +165,6 @@ const UserNew = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, passwordHash);
       // Signed up successfully
       const user = userCredential.user;
-      console.log("User created:", user);
       updateFirebaseUidInDb(user.uid, user.email)
       // You can redirect the user or update UI state here
     } catch (error) {
@@ -298,6 +297,9 @@ if (!response.ok) {
   })
 
 if (!response.ok) {
+    if(response.status === 403){
+        alert("Not Authorized");
+    }
     const errorText = await response.text();
     throw new Error(errorText || 'Failed to update Firebase UID');
   }

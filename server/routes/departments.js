@@ -5,7 +5,7 @@ import authenticate from '../middleware/authenticate.js';
 import authorize from '../middleware/authorize.js';
 
 // Get all roles
-router.get('/',authenticate, authorize(["Admin", "User", "Agent"]), async (_req, res) => {
+router.get('/',authenticate, authorize(["Admin", "User", "Agent","Tech"]), async (_req, res) => {
   try {
     await poolConnect;
 
