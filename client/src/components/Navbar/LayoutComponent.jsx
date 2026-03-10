@@ -2,9 +2,7 @@
 import React, { useState } from 'react';
 import { Image, Layout, Menu, theme } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router';
-import { navItems, navItems2 } from './navigation';
-import { RocketFilled } from '@ant-design/icons';
-import LogoutButton from '../LogoutButton/LogoutButton';
+import { navItems } from './navigation';
 
 const { Header, Content, Sider } = Layout;
 
@@ -37,18 +35,6 @@ const LayoutComponent = () => {
           }}
           items={navItems}
         />
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[selectedKey]} // Keep the current menu item highlighted
-          onClick={({ key }) => {
-            const item = navItems.find(i => i.key === key);
-            if (item) {
-              navigate(item.path); // Navigate using React Router
-            }
-          }}
-          items={navItems2}
-          />
           </div>
         </div>
       </Sider>

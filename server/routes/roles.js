@@ -6,7 +6,7 @@ import authorize from '../middleware/authorize.js';
 const router = express.Router();
 
 // Get all roles
-router.get('/',authenticate, authorize(["Admin", "User", "Agent"]), async (_req, res) => {
+router.get('/',authenticate, authorize(["Admin", "User", "Agent","Tech"]), async (_req, res) => {
   try {
     await poolConnect;
 

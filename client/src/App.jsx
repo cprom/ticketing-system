@@ -21,58 +21,136 @@ import UserContext from "./Context/UserContext";
 
 function AppRoutes() {
   const { data: session, isLoading } = useSession();
-
+  
   if (isLoading) {
     return <div>Initializing...</div>;
   }
 
   return (
        <UserContext.Provider value={session}>
-    <Routes>
-      {/* Public route: login */}
+     <Routes>
+      {/* Login */}
       <Route
         path="/login"
-        element={session ? <Navigate to="/dashboard" replace /> : <Login />}
+        element={<Login />}
       />
 
-      {/* Protected layout for all authenticated routes */}
+      {/* Protected Layout */}
       <Route
         path="/"
         element={
-          session ?
           <ProtectedRoute>
             <LayoutComponent />
           </ProtectedRoute>
-          :
-          <Login/>
         }
       >
-        {/* Default index route redirects to dashboard */}
+        {/* Default */}
         <Route index element={<Navigate to="dashboard" replace />} />
 
-        {/* Dashboard */}
-        <Route path="dashboard" element={<Dashboard />} />
+        {/* All logged-in users */}
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "User", "Agent","Tech"]}>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Tickets */}
-        <Route path="tickets" element={<Tickets />} />
-        <Route path="tickets/:id" element={<TicketDetails />} />
-        <Route path="tickets/new" element={<TicketNew />} />
-        <Route path="tickets/edit/:id" element={<TicketEdit />} />
+        <Route
+          path="profile"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "User", "Agent","Tech"]}>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Profile */}
-        <Route path="profile" element={<Profile />} />
+        {/* Admin + User tickets */}
+        <Route
+          path="tickets"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "User", "Agent","Tech"]}>
+              <Tickets />
+            </ProtectedRoute>
+          }
+        />
 
-        {/* Users - admin-only section */}
-        <Route path="users" element={<Users />} />
-        <Route path="user/:id" element={<UserDetails />} />
-        <Route path="user/new" element={<UserNew />} />
-        <Route path="user/edit/:id" element={<UserEdit />} />
+        <Route
+          path="tickets/:id"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "User", "Agent","Tech"]}>
+              <TicketDetails />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="tickets/new"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Tech"]}>
+              <TicketNew />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="tickets/edit/:id"
+          element={
+            <ProtectedRoute allowedRoles={["Admin","Tech"]}>
+              <TicketEdit />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin ONLY SECTION */}
+        <Route
+          path="users"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "User", "Agent","Tech"]}>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="user/:id"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "User", "Agent","Tech"]}>
+              <UserDetails />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="user/new"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Tech"]}>
+              <UserNew />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="user/edit/:id"
+          element={
+            <ProtectedRoute allowedRoles={["Admin", "Tech"]}>
+              <UserEdit />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
-      {/* Catch-all: redirect based on session */}
+      {/* Catch all */}
       <Route
         path="*"
-        element={session ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />}
+        element={
+          session ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
       />
     </Routes>
 </UserContext.Provider>

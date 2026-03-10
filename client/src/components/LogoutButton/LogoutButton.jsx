@@ -1,14 +1,17 @@
 import { Button } from 'antd'
 import { LogoutOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router';
 
 const LogoutButton = () => {
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_BASE_API_URL;
 
-   async function handleLogOut() {
-  await fetch("http://localhost:3000/api/auth/logout", {
+  async function handleLogOut() {
+  await fetch(`${apiUrl}/api/auth/logout`, {
     method: "POST",
     credentials: "include",
   });
-  window.location.reload();
+  navigate('/login')
   }
 
   return (

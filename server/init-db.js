@@ -70,7 +70,6 @@ async function init() {
         FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID),
       );
 
-
       IF OBJECT_ID('TicketStatus') IS NULL
       CREATE TABLE TicketStatus (
         StatusID INT IDENTITY PRIMARY KEY,
@@ -136,7 +135,7 @@ async function init() {
     await pool.request().query(`
         
       IF NOT EXISTS (SELECT 1 FROM Roles)
-        INSERT INTO Roles (RoleName) VALUES ('Admin'), ('Agent'), ('User');
+        INSERT INTO Roles (RoleName) VALUES ('Admin'), ('Agent'), ('User'), ('Tech');
 
       IF NOT EXISTS (SELECT 1 FROM Department)
         INSERT INTO Department (DepartmentName) 
@@ -159,16 +158,11 @@ async function init() {
         ( FullName, FirstName, LastName, Email, PasswordHash, RoleID, JobTitle, DepartmentID, PhoneNumber, Address, ProfileImg)
         VALUES
         ('System Admin','System', 'Admin', 'admin@tickets.local', 'hashed_password', 1, 'Sys Admin', 1, '555-555-5555', '123 Test Street City CA 90805','image/url/1'),
-        ('Support Agent','Support','Agent', 'agent@tickets.local', 'hashed_password', 2, 'Account Manager',5, '555-555-5555', '123 Test Street City CA 90805','image/url/1'),
-        ('End User','End','User', 'user@tickets.local', 'hashed_password', 3, 'Accountant', 1, '222-222-2222', '124 Test1 Street City CA 90805','image/url/2'),
-        ('Kaylie Prom','Kaylie','Prom', 'kprom@tickets.local', 'hashed_password', 3, 'Vice President', 6, '111-111-1111', '125 Test2 Street City CA 90805','image/url/3'),
-        ('Bella Prom','Bella','Prom', 'bprom@tickets.local', 'hashed_password', 2, 'CEO', 1, '333-333-3333', '127 Test3 Street City CA 90805','image/url/4');
 
       IF NOT EXISTS (SELECT 1 FROM Tickets)
         INSERT INTO Tickets (Title, Description, CreatedBy, StatusID, PriorityID, CategoryID)
         VALUES 
         ('Seeded Ticket 1', 'Ticket seeded by script for testing', 4, 2, 4, 1),
-        ('Seeded Ticket 2', 'Ticket seeded by script for testing 2', 5, 1, 3, 2);
     `);
 
     console.log('Schema created and data seeded.');

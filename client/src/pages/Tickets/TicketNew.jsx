@@ -187,6 +187,9 @@ const createNewTicket = async (title, description, currentUserId, assignToId, pr
   })
 
    if (!response.ok) {
+        if(response.status === 403){
+        alert("Not Authorized")
+    }
     const errorText = await response.text();
     throw new Error(errorText || 'Failed to create ticket');
   }

@@ -10,7 +10,7 @@ const router =  express.Router();
 // Tickets
 // -------------------------------------
 // Get all tickets
-router.get('/', authenticate, authorize([ "Admin", "User", "Agent"]), async (_, res) => {
+router.get('/', authenticate, authorize([ "Admin", "User", "Agent","Tech"]), async (_, res) => {
   try {
     await poolConnect;
     const result = await pool.request().query(`
@@ -30,7 +30,7 @@ router.get('/', authenticate, authorize([ "Admin", "User", "Agent"]), async (_, 
 });
 
 // Get Ticket by TicketID
-router.get('/:id', authenticate, authorize([ "Admin", "User", "Agent"]), async (req, res) => {
+router.get('/:id', authenticate, authorize([ "Admin", "User", "Agent","Tech"]), async (req, res) => {
   try {
     await poolConnect;
     const result = await pool.request()
@@ -67,7 +67,7 @@ router.get('/:id', authenticate, authorize([ "Admin", "User", "Agent"]), async (
 });
 
 // Create ticket
-router.post('/', authenticate, authorize([ "Admin", "Agent"]), async (req, res) => {
+router.post('/', authenticate, authorize([ "Admin", "Agent","Tech"]), async (req, res) => {
   const { title, description, createdBy, assignedTo, statusId, priorityId, categoryId } = req.body || {};
 
   try {
@@ -96,7 +96,7 @@ router.post('/', authenticate, authorize([ "Admin", "Agent"]), async (req, res) 
 });
 
 // Update ticket
-router.put('/:id', authenticate, authorize([ "Admin", "Agent"]), async (req, res) => {
+router.put('/:id', authenticate, authorize([ "Admin", "Agent","Tech"]), async (req, res) => {
   const ticketId = parseInt(req.params.id, 10);
   const {
     title,
@@ -178,7 +178,7 @@ router.put('/:id', authenticate, authorize([ "Admin", "Agent"]), async (req, res
 // -------------------------------------
 
 // Update status / assignment
-router.put('/:id',authenticate, authorize([ "Admin", "Agent"]), async (req, res) => {
+router.put('/:id',authenticate, authorize([ "Admin", "Agent","Tech"]), async (req, res) => {
   const { statusId, assignedTo } = req.body || {};
 
   try {
@@ -240,7 +240,7 @@ router.delete('/:id', authenticate, authorize([ "Admin"]), async (req, res) => {
 // ---------------------------------------
 
 // Create a comment for a ticket
-router.post('/:id/comments', authenticate, authorize([ "Admin", "Agent"]), async (req, res) => {
+router.post('/:id/comments', authenticate, authorize([ "Admin", "Agent","Tech"]), async (req, res) => {
   const ticketId = parseInt(req.params.id, 10);
   const { userId, comment } = req.body || {};
 
@@ -302,7 +302,7 @@ router.post('/:id/comments', authenticate, authorize([ "Admin", "Agent"]), async
 //   "userId": 2,
 //   "comment": "I am looking into this issue now."
 // }
-router.get('/:id/comments', async (req, res) => {
+router.get('/:id/comments', authenticate, authorize(["Admin", "Agent","Tech", "User"]), async (req, res) => {
   const ticketId = parseInt(req.params.id, 10);
 
   if (isNaN(ticketId)) {
@@ -335,7 +335,7 @@ router.get('/:id/comments', async (req, res) => {
 
 // Update comment
 // PUT /api/tickets/comments/:commentId
-router.put('/comments/:commentId', authenticate, authorize([ "Admin", "Agent"]), async (req, res) => {
+router.put('/comments/:commentId', authenticate, authorize([ "Admin", "Agent","Tech"]), async (req, res) => {
   const commentId = parseInt(req.params.commentId, 10);
   const { comment } = req.body || {};
 

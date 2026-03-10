@@ -257,6 +257,9 @@ const updateUser = async (firstName, lastName, address, phoneNumber, email, role
   })
 
 if (!response.ok) {
+    if(response.status === 403){
+        alert("Not Authorized")
+    }
     const errorText = await response.text();
     throw new Error(errorText || 'Failed to update user');
   }

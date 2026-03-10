@@ -6,7 +6,7 @@ import authorize from '../middleware/authorize.js';
 const router = express.Router();
 
 // Get all statuses
-router.get('/', authenticate, authorize(["Admin", "User", "Agent"]), async (_req, res) => {
+router.get('/', authenticate, authorize(["Admin", "User", "Agent","Tech"]), async (_req, res) => {
   try {
     await poolConnect;
 
@@ -25,7 +25,7 @@ router.get('/', authenticate, authorize(["Admin", "User", "Agent"]), async (_req
 });
 
 // Get status by id
-router.get('/:id', authenticate, authorize(["Admin", "User", "Agent"]), async (req, res) => {
+router.get('/:id', authenticate, authorize(["Admin", "User", "Agent","Tech"]), async (req, res) => {
   const statusId = parseInt(req.params.id, 10);
 
   if (isNaN(statusId)) {

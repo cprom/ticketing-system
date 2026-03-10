@@ -26,7 +26,6 @@ function Profile() {
 
 const apiUrl = import.meta.env.VITE_BASE_API_URL;
 const { data: session } = useSession();
-
     const getUser = async () => {
         const response = await fetch(`${apiUrl}/api/users/${session.userId}`,
           {
@@ -62,10 +61,15 @@ const { data: session } = useSession();
         </Flex>
         </Card>
             <Flex gap="middle" className="title-line" justify="end">
-               
+               {
+                session.role === "Admin" || session === "Tech" 
+                ?
                 <Tooltip placement='bottom' title={`Edit ${userData.FullName} info`}>
                     <Button color="default" variant="outlined"  href={`/user/edit/${userData.UserID}`} ><EditOutlined/>Edit</Button>
                 </Tooltip>
+                : 
+                ""
+               }
             </Flex>
 
         <Card style={{minHeight: 300, marginTop: 10}} >
