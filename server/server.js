@@ -1,5 +1,5 @@
 // import express from 'express';
-// // import sql from 'mssql';
+import sql from 'mssql';
 // import 'dotenv/config';
 // import cors from 'cors'
 // import ticketsRoutes from './routes/tickets.js';
