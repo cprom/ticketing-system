@@ -68,7 +68,7 @@ router.get('/:id', authenticate, authorize([ "Admin", "User", "Agent","Tech"]), 
 
 // Create ticket
 router.post('/', authenticate, authorize([ "Admin", "Agent","Tech"]), async (req, res) => {
-  const { title, description, createdBy, assignedTo, statusId, priorityId, categoryId } = req.body || {};
+  const { title, description, createdBy, assignedTo, statusId, priorityId, categoryId, requesterId } = req.body || {};
 
   try {
     await poolConnect;
@@ -80,11 +80,13 @@ router.post('/', authenticate, authorize([ "Admin", "Agent","Tech"]), async (req
       .input('StatusID', sql.Int, statusId)
       .input('PriorityID', sql.Int, priorityId)
       .input('CategoryID', sql.Int, categoryId)
+      .input('RequesterID', sql.Int, requesterId)
+      .input('IsActive', sql.Bit, 1)
       .query(`
         INSERT INTO Tickets
-          (Title, Description, CreatedBy, AssignedTo, StatusID, PriorityID, CategoryID)
+          (Title, Description, CreatedBy, AssignedTo, StatusID, PriorityID, CategoryID, RequesterID, IsActive)
         VALUES
-          (@Title, @Description, @CreatedBy, @AssignedTo, @StatusID, @PriorityID, @CategoryID);
+          (@Title, @Description, @CreatedBy, @AssignedTo, @StatusID, @PriorityID, @CategoryID, @RequesterID, @IsActive);
 
         SELECT SCOPE_IDENTITY() AS TicketID;
       `);

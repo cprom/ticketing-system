@@ -21,6 +21,14 @@ If you are developing a production application, we recommend using TypeScript wi
 App is seperated into Server and Client folder each has its own package.json
 Make sure to run npm i in both folders.
 
+## Firebase
+- Firebase is used for authentication/login
+  - create an account
+    -  update the firebaseConfig object with your own values in firebase.js (GOOGLE_APPLICATION_CREDENTIALS=<path>)
+  - update .env with the location of the the firebase-key.json file ()
+  - create an admin user in firebase and add the FirebaseUID value of the user in the users table. (initial setup only creating users from the app will automatically add FirebaseUID to DB.)
+    - You can update the 'INSERT USER' user value with the FirebaseUID and run the init-db.js file.
+
 ## Dotenv
 - run: <code>npm i dotenv in server folder</code>
     - add a .env in the root and add:
