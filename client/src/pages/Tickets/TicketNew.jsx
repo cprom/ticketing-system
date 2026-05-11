@@ -23,6 +23,7 @@ const TicketNew = () => {
     const [categoryId, setCategoryId] = useState();
     const [statusId, setStatusId] = useState();
     const [description, setDescription] = useState();
+    const [requesterId, setRequesterId] = useState();
 
     const currentUserId = currentUser.userId;
 
@@ -48,10 +49,13 @@ const TicketNew = () => {
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value)
     }
+    const handleRequestorChange = (value) => {
+        setRequesterId(value)
+    }
 
     const handleCreateBtnClick = async () => {
         try {
-            const result =  await createNewTicket(title, description, currentUserId, assignToId, priorityId, categoryId, statusId );
+            const result =  await createNewTicket(title, description, currentUserId, assignToId, priorityId, categoryId, statusId, requesterId );
             navigate(`/tickets/${result.ticketId}`);
         }
         catch (error) {
@@ -82,6 +86,10 @@ const TicketNew = () => {
     
     let assignOptions = [];
     userData?.map((tech) => assignOptions.push({label: tech.FullName, value: tech.UserID}))
+    
+
+    let requesterOptions = [];
+    userData?.map((user) => requesterOptions.push({label: user.FullName, value: user.UserID}))
 
     // Priority
     const { data: priorityData, error: priorityDataError } = useQuery({
@@ -142,6 +150,9 @@ const TicketNew = () => {
             <Form.Item label="Assign To">
                 <Select onChange={handleAssignToChange} options={assignOptions} style={{width: 250}}/>
             </Form.Item>
+            <Form.Item label="Requested By">
+                <Select onChange={handleRequestorChange} options={requesterOptions} style={{width: 250}}/>
+            </Form.Item>
             <Form.Item name={['Priority']} label="Priority" rules={[{required: true}]}>
                 <Select onChange={handlePriorityChange} options={priorityOptions} style={{width: 250}}/>
             </Form.Item>
@@ -164,7 +175,7 @@ const TicketNew = () => {
   )
 }
 
-const createNewTicket = async (title, description, currentUserId, assignToId, priorityId, categoryId, statusId ) => {
+const createNewTicket = async (title, description, currentUserId, assignToId, priorityId, categoryId, statusId, requesterId ) => {
   let headersList = {
  "Content-Type": "application/json"
 }
@@ -175,7 +186,8 @@ const createNewTicket = async (title, description, currentUserId, assignToId, pr
     assignedTo: assignToId,
     priorityId: priorityId,
     categoryId: categoryId,
-    statusId: statusId
+    statusId: statusId,
+    requesterId: requesterId
   })
 
  try {

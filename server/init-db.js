@@ -65,6 +65,7 @@ async function init() {
         Address VARCHAR(500),
         ProfileImg VARCHAR(200),
         ManagerID INT,
+        IsActive BIT NOT NULL,
         CreatedAt DATETIME DEFAULT GETDATE(),
         FOREIGN KEY (RoleID) REFERENCES Roles(RoleID),
         FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID),
@@ -100,11 +101,16 @@ async function init() {
         CategoryID INT NOT NULL,
         CreatedAt DATETIME DEFAULT GETDATE(),
         UpdatedAt DATETIME NULL,
+        ClosedAt DATETIME NULL,
+        RequesterID INT NOT NULL,
+        IsActive BIT NOT NULL,
+        FirebaseUID VARCHAR(200) NULL,
         FOREIGN KEY (CreatedBy) REFERENCES Users(UserID),
         FOREIGN KEY (AssignedTo) REFERENCES Users(UserID),
         FOREIGN KEY (StatusID) REFERENCES TicketStatus(StatusID),
         FOREIGN KEY (PriorityID) REFERENCES TicketPriority(PriorityID),
-        FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
+        FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID),
+        FOREIGN KEY (RequesterID) REFERENCES Users(UserID)
       );
 
       IF OBJECT_ID('TicketComments') IS NULL
@@ -155,14 +161,15 @@ async function init() {
 
       IF NOT EXISTS (SELECT 1 FROM Users)
         INSERT INTO Users 
-        ( FullName, FirstName, LastName, Email, PasswordHash, RoleID, JobTitle, DepartmentID, PhoneNumber, Address, ProfileImg)
+        ( FullName, FirstName, LastName, Email, PasswordHash, RoleID, JobTitle, DepartmentID, PhoneNumber, Address, ProfileImg, IsActive, FirebaseUID)
         VALUES
-        ('System Admin','System', 'Admin', 'admin@tickets.local', 'hashed_password', 1, 'Sys Admin', 1, '555-555-5555', '123 Test Street City CA 90805','image/url/1'),
+        ('Admin Admin','Admin', 'Admin', 'admin@email.com', 'admin@', 1, 'Sys Admin', 1, '555-555-5555', '123 Test Street City CA 90805','image/url/1', 1, 'HpQU9wlldxW9RqAZ4d6uxmbVz8A2')
+        
 
       IF NOT EXISTS (SELECT 1 FROM Tickets)
-        INSERT INTO Tickets (Title, Description, CreatedBy, StatusID, PriorityID, CategoryID)
+        INSERT INTO Tickets (Title, Description, CreatedBy, StatusID, PriorityID, CategoryID, RequesterID, IsActive)
         VALUES 
-        ('Seeded Ticket 1', 'Ticket seeded by script for testing', 4, 2, 4, 1),
+        ('Seeded Ticket 1', 'Ticket seeded by script for testing', 4, 2, 4, 1, 2, 1)
     `);
 
     console.log('Schema created and data seeded.');
