@@ -1,4 +1,14 @@
+// import express from 'express';
 import sql from 'mssql';
+// import 'dotenv/config';
+// import cors from 'cors'
+// import ticketsRoutes from './routes/tickets.js';
+// import usersRoutes from'./routes/users.js';
+// import priorityRoutes from './routes/priorities.js'
+// import categoryRoutes from './routes/categories.js'
+// import statusRoutes from './routes/statuses.js'
+// import roleRoutes from './routes/roles.js'
+// import departmentRoutes from './routes/departments.js'
 
 import dotenv from "dotenv";
 dotenv.config();
