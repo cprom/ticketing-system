@@ -140,11 +140,12 @@ router.post('/',authenticate, authorize(["Admin", "Agent","Tech"]), async (req, 
     .input('DepartmentID', sql.Int, departmentId)
     .input('ManagerID', sql.Int, managerId)
     .input('PasswordHash', sql.Text, passwordHash)
+    .input('IsActive', sql.Bit, 1)
     .query(`
       INSERT INTO Users
-      ( FullName, FirstName, LastName, Address, PhoneNumber, Email, RoleID, JobTitle, DepartmentID, ManagerID, PasswordHash )
+      ( FullName, FirstName, LastName, Address, PhoneNumber, Email, RoleID, JobTitle, DepartmentID, ManagerID, PasswordHash, IsActive )
       VALUES
-      (@FullName, @FirstName, @LastName, @Address, @PhoneNumber, @Email, @RoleID, @JobTitle, @DepartmentID, @ManagerID, @PasswordHash );
+      (@FullName, @FirstName, @LastName, @Address, @PhoneNumber, @Email, @RoleID, @JobTitle, @DepartmentID, @ManagerID, @PasswordHash, @IsActive );
       SELECT SCOPE_IDENTITY() AS UserID;
       `);
       res.status(201).json({userId: result.recordset[0].UserID});
@@ -157,7 +158,7 @@ router.post('/',authenticate, authorize(["Admin", "Agent","Tech"]), async (req, 
   }
 
   res.status(500).json({
-    message: 'Something went wrong. Please try again.'
+    message: err.message
   });
     }
 });
